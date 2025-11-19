@@ -48,3 +48,9 @@ build/
 /jre-minimal/
 /.idea/
 /logs
+
+### Properties ###
+application-secret.properties
+**/application-secret.properties
+**/application.properties
+!**/application.properties.example

@@ -1,16 +1,16 @@
 # ===============================
 #  Telegram Bot Settings
 # ===============================
-bot.username=TBot_test
-bot.token=8220239302:AAFI14lRzKpkrKj0MuD_NRLNff0MS9e-q1s
-bot.adminChatId=979489416
+bot.username=${BOT_USERNAME}
+bot.token=${BOT_TOKEN}
+bot.adminChatId=${BOT_ADMIN_CHAT_ID}
 
 # ===============================
 #  Database (PostgreSQL)
 # ===============================
-spring.datasource.url=jdbc:postgresql://localhost:5432/vedic_num_bot_db
-spring.datasource.username=vnbot
-spring.datasource.password=12345
+spring.datasource.url=${DB_URL}
+spring.datasource.username=${DB_USER}
+spring.datasource.password=${DB_PASS}
 spring.datasource.driver-class-name=org.postgresql.Driver
 
 # ===============================
