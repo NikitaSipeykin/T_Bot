@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="ru">
+<body>
+<form id="broadcastForm">
+    <textarea name="text" id="text" rows="5" cols="60"></textarea><br/>
+    <button type="submit">Send broadcast</button>
+</form>
+
+<script>
+document.getElementById("broadcastForm").addEventListener("submit", async function (e) {
+    e.preventDefault();
+
+    const text = document.getElementById("text").value;
+
+    await fetch("/send", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json; charset=UTF-8"
+        },
+        body: JSON.stringify({ text })
+    });
+
+    alert("Отправлено!");
+});
+</script>
+</body>
+</html>
