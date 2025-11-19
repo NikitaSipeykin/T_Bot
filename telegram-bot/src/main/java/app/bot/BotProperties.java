@@ -1,0 +1,20 @@
+package app.bot;
+
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.stereotype.Component;
+
+@Component
+@ConfigurationProperties(prefix = "bot")
+public class BotProperties {
+  private String token;
+  private String username;
+  private Long adminChatId;
+
+  // getters/setters
+  public String getToken() { return token; }
+  public void setToken(String token) { this.token = token; }
+  public String getUsername() { return username; }
+  public void setUsername(String username) { this.username = username; }
+  public Long getAdminChatId() { return adminChatId; }
+  public void setAdminChatId(Long adminChatId) { this.adminChatId = adminChatId; }
+}
