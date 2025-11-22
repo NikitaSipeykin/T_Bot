@@ -27,6 +27,7 @@ public abstract class BaseTelegramBot extends TelegramLongPollingBot {
     if (update.hasMessage() && update.getMessage().hasText()) {
       messageProcessing(update);
     }
+
     if (update.hasCallbackQuery()) {
       callbackProcessing(update);
     }

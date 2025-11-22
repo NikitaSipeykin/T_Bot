@@ -21,6 +21,7 @@
         <module>telegram-bot</module>
         <module>web-app</module>
         <module>texts_node</module>
+        <module>video-note_node</module>
     </modules>
 
     <properties>

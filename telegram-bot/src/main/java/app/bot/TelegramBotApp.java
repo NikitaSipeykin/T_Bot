@@ -10,7 +10,8 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @ComponentScan(basePackages = {
     "app.bot",
     "app.core",
-    "app.text.node"
+    "app.text.node",
+    "app.video.node"
 })
 @EnableJpaRepositories(basePackages = "app.text.node.texts")
 @EntityScan(basePackages = "app.text.node.texts")
