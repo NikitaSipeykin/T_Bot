@@ -16,6 +16,16 @@ public class BroadcastController {
     return "index"; // src/main/resources/templates/index.html
   }
 
+  @GetMapping("/texts")
+  public String textsPage() {
+    return "edit-texts.html";
+  }
+
+  @GetMapping("/broadcast")
+  public String broadcastPage() {
+    return "index";
+  }
+
   @PostMapping("/send")
   @ResponseBody
   public String send(@RequestBody BroadcastRequest request) {

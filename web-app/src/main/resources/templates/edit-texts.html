@@ -1,29 +1,24 @@
 <!doctype html>
-<html lang="ru">
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
-    <title>Broadcast Sender</title>
+    <title>Edit Bot Texts</title>
     <link rel="stylesheet" href="/css/styles.css">
 </head>
 
 <body>
     <div class="wrapper">
         <div id="header"></div>
-
         <div class="container">
-            <h2>Broadcast Message</h2>
+            <h2>Edit Bot Texts</h2>
 
-            <form id="broadcastForm">
-                <textarea name="text" id="text" placeholder="Введите текст для рассылки..."></textarea>
-                <button type="submit">Отправить</button>
-            </form>
-
+            <div id="list"></div>
         </div>
     </div>
 
 
-    <script src="/js/script.js"></script>
+    <script src="/js/edit-texts.js"></script>
     <script>
         fetch("/common/header.html")
             .then(res => res.text())

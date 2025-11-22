@@ -2,6 +2,7 @@ package app.bot.demo;
 
 import app.bot.BaseTelegramBot;
 import app.bot.TelegramMessageSender;
+import app.text.node.texts.BotTextService;
 import app.core.BroadcastService;
 import app.core.SubscriberService;
 import org.springframework.stereotype.Component;
@@ -11,12 +12,16 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 public class DemoBot extends BaseTelegramBot {
   private final SubscriberService subscriberService;
   private final BroadcastService broadcastService;
+  private final BotTextService text;
+
   private int currentState = 0;
 
-  public DemoBot(SubscriberService subscriberService) {
+
+  public DemoBot(SubscriberService subscriberService, BotTextService text) {
     TelegramMessageSender messageSender = new TelegramMessageSender(this);
     this.subscriberService = subscriberService;
     this.broadcastService = new BroadcastService(subscriberService, messageSender);
+    this.text = text;
   }
 
   // PROCESSING =========================================
@@ -47,12 +52,12 @@ public class DemoBot extends BaseTelegramBot {
 
     switch (data) {
       case Commands.FIRST -> {
-        sendMessage(chatId, TEXT.FIRST_STEP.get(), keyboard(
+        sendMessage(chatId, text.get("FIRST_STEP"), keyboard(
             button("Следующий шаг", Commands.SECOND)
         ));
       }
       case Commands.SECOND -> {
-        sendMessage(chatId, TEXT.SECOND_STEP.get(), null);
+        sendMessage(chatId, text.get("SECOND_STEP"), null);
         currentState = 1;
       }
     }
@@ -60,13 +65,13 @@ public class DemoBot extends BaseTelegramBot {
 
   private void stateProcessing(Long chatId, String messageText) {
     switch (currentState) {
-      case 0 -> sendMessage(chatId, TEXT.ERROR.get(), null);
+      case 0 -> sendMessage(chatId, text.get("ERROR"), null);
     }
   }
 
   // COMMANDS ===========================================
   private void startCommand(Long chatId, String firstName) {
-    sendMessage(chatId, TEXT.START.format(firstName != null ? firstName : "друг"),
+    sendMessage(chatId, text.format("START", firstName != null ? firstName : "друг"),
         keyboard(button("Приступим?", Commands.FIRST)));
   }
 
@@ -77,13 +82,13 @@ public class DemoBot extends BaseTelegramBot {
       String body = messageText.substring("/broadcast ".length());
       broadcastService.broadcast(body);
     } else {
-      sendMessage(chatId, TEXT.BROADCAST_FAIL.get(), null);
+      sendMessage(chatId, text.get("BROADCAST_FAIL"), null);
     }
   }
 
   private void unsubscribeCommand(Long chatId) {
     subscriberService.unsubscribe(chatId);
-    sendMessage(chatId, TEXT.UNSUBSCRIBE.get(), null);
+    sendMessage(chatId, text.get("UNSUBSCRIBE"), null);
   }
 }
 
