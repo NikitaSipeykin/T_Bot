@@ -26,11 +26,11 @@ jobs:
 
       - name: Build Telegram Bot
         run: |
-          docker build -t ghcr.io/${{ github.actor }}/telegram-bot:latest ./telegram-bot
+          docker build -t ghcr.io/nikitasipeykin/telegram-bot:latest ./telegram-bot
 
       - name: Push Telegram Bot
         run: |
-          docker push ghcr.io/${{ github.actor }}/telegram-bot:latest
+          docker push ghcr.io/nikitasipeykin/telegram-bot:latest
 
   build_and_push_web:
     name: Build Web App Image
@@ -53,8 +53,8 @@ jobs:
 
       - name: Build Web App
         run: |
-          docker build -t ghcr.io/${{ github.actor }}/web-app:latest ./web-app
+          docker build -t ghcr.io/nikitasipeykin/web-app:latest ./web-app
 
       - name: Push Web App
         run: |
-          docker push ghcr.io/${{ github.actor }}/web-app:latest
+          docker push ghcr.io/nikitasipeykin/web-app:latest
