@@ -1,0 +1,60 @@
+name: Build and Push Docker Images
+
+on:
+  push:
+    branches: ["master"]
+
+jobs:
+  build_and_push_bot:
+    name: Build Telegram Bot Image
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build Telegram Bot
+        run: |
+          docker build -t ghcr.io/${{ github.actor }}/telegram-bot:latest ./telegram-bot
+
+      - name: Push Telegram Bot
+        run: |
+          docker push ghcr.io/${{ github.actor }}/telegram-bot:latest
+
+  build_and_push_web:
+    name: Build Web App Image
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build Web App
+        run: |
+          docker build -t ghcr.io/${{ github.actor }}/web-app:latest ./web-app
+
+      - name: Push Web App
+        run: |
+          docker push ghcr.io/${{ github.actor }}/web-app:latest

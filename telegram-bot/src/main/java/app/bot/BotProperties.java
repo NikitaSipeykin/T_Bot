@@ -8,13 +8,13 @@ import org.springframework.stereotype.Component;
 public class BotProperties {
   private String token;
   private String username;
-  private Long adminChatId;
+  private Long adminId;
 
   // getters/setters
   public String getToken() { return token; }
   public void setToken(String token) { this.token = token; }
   public String getUsername() { return username; }
   public void setUsername(String username) { this.username = username; }
-  public Long getAdminChatId() { return adminChatId; }
-  public void setAdminChatId(Long adminChatId) { this.adminChatId = adminChatId; }
+  public Long getAdminId() { return adminId; }
+  public void setAdminId(Long adminId) { this.adminId = adminId; }
 }

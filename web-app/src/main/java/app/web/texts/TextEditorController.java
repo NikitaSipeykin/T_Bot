@@ -21,12 +21,8 @@ public class TextEditorController {
   }
 
   @PutMapping("/{id}")
-  public BotText update(
-      @PathVariable String id,
-      @RequestBody BotText updated
-  ) {
-    BotText text = repository.findById(id)
-        .orElseThrow(() -> new RuntimeException("Not found"));
+  public BotText update(@PathVariable String id, @RequestBody BotText updated) {
+    BotText text = repository.findById(id).orElseThrow(() -> new RuntimeException("Not found"));
 
     text.setValue(updated.getValue());
     repository.save(text);
