@@ -37,6 +37,7 @@ public class DemoBot extends BaseTelegramBot {
   @Override
   public void messageProcessing(Update update) {
     String messageText = update.getMessage().getText();
+    Long userId = update.getMessage().getFrom().getId();
     Long chatId = update.getMessage().getChatId();
     String username = update.getMessage().getFrom().getUserName();
     String firstName = update.getMessage().getFrom().getFirstName();
@@ -46,13 +47,13 @@ public class DemoBot extends BaseTelegramBot {
       startCommand(chatId, firstName);
     }
     else if (messageText.equals(Commands.CIRCLE)) {
-      circleCommand(update, chatId);
+      circleCommand(chatId, update);
     }
     else if (messageText.equals(Commands.UNSUBSCRIBE)) {
       unsubscribeCommand(chatId);
     }
     else if (messageText.startsWith(Commands.BROADCAST)) {
-      broadcastCommand(messageText, chatId);
+      broadcastCommand(chatId, messageText, userId);
     }
     else stateProcessing(chatId, messageText);
   }
@@ -87,7 +88,7 @@ public class DemoBot extends BaseTelegramBot {
         keyboard(button("Приступим?", Commands.FIRST)));
   }
 
-  private void circleCommand(Update update, Long chatId) {
+  private void circleCommand(Long chatId, Update update) {
     try {
       String resourceName = "video.mp4";
 
@@ -116,10 +117,10 @@ public class DemoBot extends BaseTelegramBot {
     }
   }
 
-  private void broadcastCommand(String messageText, Long chatId) {
+  private void broadcastCommand(Long chatId, String messageText, Long userId) {
     // Для безопасности — разрешим только админскую команду
-    Long adminId = props.getAdminChatId();
-    if (adminId != null && adminId.equals(chatId)) {
+    Long adminId = props.getAdminId();
+    if (adminId != null && adminId.equals(userId)) {
       String body = messageText.substring("/broadcast ".length());
       broadcastService.broadcast(body);
     } else {
