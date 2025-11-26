@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Video Manager</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+
+<body>
+<div class="wrapper">
+    <div id="header"></div>
+
+    <div class="container">
+        <h2>Video Manager</h2>
+
+        <h3>Replace video for existing key</h3>
+
+        <label>Choose key:</label>
+        <select id="keySelect"></select>
+
+        <br><br>
+
+        <label>Choose new file:</label><br>
+        <input id="fileInput" type="file" accept="video/*">
+        <button onclick="uploadVideo()">Upload / Replace</button>
+
+        <hr style="margin: 25px 0;">
+
+        <h3>Current Videos</h3>
+        <div id="videoList"></div>
+    </div>
+</div>
+
+<script src="/js/videos.js"></script>
+<script>
+    fetch("/common/header.html")
+        .then(res => res.text())
+        .then(html => document.getElementById("header").innerHTML = html);
+</script>
+
+</body>
+</html>

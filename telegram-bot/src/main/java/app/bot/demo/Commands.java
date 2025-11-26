@@ -11,4 +11,8 @@ public class Commands {
   public static final String SECOND = "SECOND";
   public static final String ADD_USER_TO_DB = "ADD_USER";
   public static final String SKIP = "SKIP";
+
+  // --- VIDEO KEYS ---
+  public static final String KEY_CIRCLE = "CIRCLE";
+  public static final String KEY_START = "START";
 }

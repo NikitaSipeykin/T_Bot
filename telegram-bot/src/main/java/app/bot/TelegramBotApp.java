@@ -13,8 +13,8 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
     "app.text.node",
     "app.video.node"
 })
-@EnableJpaRepositories(basePackages = "app.text.node.texts")
-@EntityScan(basePackages = "app.text.node.texts")
+@EnableJpaRepositories({"app.text.node.texts", "app.video.node.web"})
+@EntityScan(basePackages = {"app.text.node.texts", "app.video.node.web"})
 public class TelegramBotApp {
   public static void main(String[] args) {
     SpringApplication.run(TelegramBotApp.class, args);

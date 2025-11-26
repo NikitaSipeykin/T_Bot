@@ -9,17 +9,10 @@ import app.video.node.VideoNoteService;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.net.URL;
-import java.nio.file.Paths;
-
 @Component
 public class DemoBot extends BaseTelegramBot {
   private final SubscriberService subscriberService;
   private final BroadcastService broadcastService;
-  private final VideoNoteService videoNoteService;
   private final BotTextService text;
 
   private int currentState = 0;
@@ -47,7 +40,7 @@ public class DemoBot extends BaseTelegramBot {
       startCommand(chatId, firstName);
     }
     else if (messageText.equals(Commands.CIRCLE)) {
-      circleCommand(chatId, update);
+      sendVideoNote(chatId, Commands.KEY_START);
     }
     else if (messageText.equals(Commands.UNSUBSCRIBE)) {
       unsubscribeCommand(chatId);
@@ -86,35 +79,7 @@ public class DemoBot extends BaseTelegramBot {
   private void startCommand(Long chatId, String firstName) {
     sendMessage(chatId, text.format("START", firstName != null ? firstName : "друг"),
         keyboard(button("Приступим?", Commands.FIRST)));
-  }
 
-  private void circleCommand(Long chatId, Update update) {
-    try {
-      String resourceName = "video.mp4";
-
-      InputStream is = getClass().getClassLoader().getResourceAsStream(resourceName);
-      if (is == null) {
-        sendMessage(chatId, "Файл ресурса не найден: " + resourceName, null);
-        return;
-      }
-
-      File temp = File.createTempFile("circle", ".mp4");
-      temp.deleteOnExit();
-
-      // Копируем ресурс из JAR во временный файл
-      try (FileOutputStream fos = new FileOutputStream(temp)) {
-        is.transferTo(fos);
-      }
-
-      // Отправляем кружок
-      var sendVideoNote = videoNoteService.buildVideoNote(chatId, temp);
-      execute(sendVideoNote);
-
-      execute(sendVideoNote);
-    } catch (Exception e) {
-      e.printStackTrace();
-      sendMessage(update.getMessage().getChatId(), "Не удалось отправить кругетс", null);
-    }
   }
 
   private void broadcastCommand(Long chatId, String messageText, Long userId) {

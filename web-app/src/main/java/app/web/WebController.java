@@ -26,6 +26,11 @@ public class WebController {
     return "index";
   }
 
+  @GetMapping("/media")
+  public String mediaPage() {
+    return "upload-videos.html";
+  }
+
   @PostMapping("/send")
   @ResponseBody
   public String send(@RequestBody BroadcastRequest request) {
