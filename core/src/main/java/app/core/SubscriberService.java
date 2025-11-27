@@ -23,4 +23,20 @@ public class SubscriberService {
   public List<Long> getActiveSubscribers() {
     return repo.findActiveChatIds();
   }
+
+  public void setEmail(Long chatId, String email){
+    repo.saveEmail(chatId, email);
+  }
+
+  public void setCode(Long chatId, String code){
+    repo.setCode(chatId, code);
+  }
+
+  public String getCode(Long chatId){
+    return repo.getVerificationCode(chatId);
+  }
+
+  public void setVerified(Long chatId){
+    repo.verify(chatId);
+  }
 }

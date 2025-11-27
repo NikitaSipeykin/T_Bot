@@ -26,4 +26,33 @@ public class SubscriberRepository {
   public List<Long> findActiveChatIds() {
     return jdbc.queryForList("SELECT chat_id FROM subscribers WHERE active = TRUE", Long.class);
   }
+
+  public void saveEmail(Long chatId, String email) {
+    jdbc.update(
+        "UPDATE subscribers SET email = ? WHERE chat_id = ?",
+        email, chatId
+    );
+  }
+
+  public void setCode(Long chatId, String code) {
+    jdbc.update(
+        "UPDATE subscribers SET verification_code = ? WHERE chat_id = ?",
+        code, chatId
+    );
+  }
+
+  public String getVerificationCode(Long chatId) {
+    return jdbc.queryForObject(
+        "SELECT verification_code FROM subscribers WHERE chat_id = ?",
+        String.class,
+        chatId
+    );
+  }
+
+  public void verify(long chatId){
+    jdbc.update(
+        "UPDATE subscribers SET verified = true WHERE chat_id = ?",
+         chatId
+    );
+  }
 }
