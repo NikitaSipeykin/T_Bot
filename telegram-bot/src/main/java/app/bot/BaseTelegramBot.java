@@ -1,5 +1,7 @@
 package app.bot;
 
+import app.video.node.VideoNoteService;
+import app.video.node.web.MediaService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +13,9 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMa
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -18,9 +23,13 @@ import java.util.List;
 @Component
 public abstract class BaseTelegramBot extends TelegramLongPollingBot {
   private static final Logger log = LoggerFactory.getLogger(BaseTelegramBot.class);
+  public VideoNoteService videoNoteService = null;
 
   @Autowired
   protected BotProperties props;
+
+  @Autowired
+  protected MediaService mediaService;
 
   @Override
   public void onUpdateReceived(Update update) {
@@ -45,6 +54,19 @@ public abstract class BaseTelegramBot extends TelegramLongPollingBot {
   }
 
   // ======== TOOLS ============
+  public void sendVideoNote(Long chatId, String key) {
+    try {
+      File video = mediaService.getFileByKey(key); // просто по ключу
+
+      var sendVideoNote = videoNoteService.buildVideoNote(chatId, video);
+      execute(sendVideoNote);
+
+    } catch (Exception e) {
+      e.printStackTrace();
+      sendMessage(chatId, "Не удалось отправить видео для ключа circle", null);
+    }
+  }
+
   public void sendMessage(Long chatId, String text, List<List<InlineKeyboardButton>> buttons) {
     SendMessage message = new SendMessage(chatId.toString(), text);
 

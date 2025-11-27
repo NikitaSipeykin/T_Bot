@@ -90,3 +90,15 @@ button:hover {
     border-radius: 12px;
     justify-content: space-around;
 }
+
+/* --- UPLOAD-VIDEOS --- =================================================== */
+
+.video-row {
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+.video-row button {
+    margin-left: 10px;
+}
+
