@@ -6,7 +6,7 @@ import app.bot.email.EmailService;
 import app.text.node.texts.BotTextService;
 import app.core.BroadcastService;
 import app.core.SubscriberService;
-import app.video.node.VideoNoteService;
+import app.video.node.NoteService;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
@@ -21,9 +21,9 @@ public class DemoBot extends BaseTelegramBot {
 
 
   public DemoBot(SubscriberService subscriberService, EmailService emailService, BotTextService text,
-                 VideoNoteService videoNoteService) {
+                 NoteService NoteService) {
     this.emailService = emailService;
-    this.videoNoteService = videoNoteService;
+    this.noteService = noteService;
     TelegramMessageSender messageSender = new TelegramMessageSender(this);
     this.subscriberService = subscriberService;
     this.broadcastService = new BroadcastService(subscriberService, messageSender);
