@@ -14,8 +14,6 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKe
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -40,17 +38,6 @@ public abstract class BaseTelegramBot extends TelegramLongPollingBot {
     if (update.hasCallbackQuery()) {
       callbackProcessing(update);
     }
-  }
-
-  // ======== PROPERTIES =======
-  @Override
-  public String getBotUsername() {
-    return props.getUsername();
-  }
-
-  @Override
-  public String getBotToken() {
-    return props.getToken();
   }
 
   // ======== TOOLS ============
@@ -95,6 +82,17 @@ public abstract class BaseTelegramBot extends TelegramLongPollingBot {
       rows.add(Collections.singletonList(b));
     }
     return rows;
+  }
+
+  // ======== PROPERTIES =======
+  @Override
+  public String getBotUsername() {
+    return props.getUsername();
+  }
+
+  @Override
+  public String getBotToken() {
+    return props.getToken();
   }
 
   // ======== ABSTRACT ========

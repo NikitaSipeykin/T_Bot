@@ -35,8 +35,6 @@ function renderVideoList() {
                 <b>Key:</b> ${key}<br>
                 <b>File:</b> ${fileName}<br><br>
 
-                <a href="${fileUrl}" target="_blank">Open video</a>
-                <button onclick="prepareReplace('${key}')">Replace</button>
                 <button onclick="deleteVideo('${fileName}', '${key}')">Delete</button>
             </div>
         `;
