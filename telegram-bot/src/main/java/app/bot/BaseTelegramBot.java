@@ -1,6 +1,6 @@
 package app.bot;
 
-import app.video.node.VideoNoteService;
+import app.video.node.NoteService;
 import app.video.node.web.MediaService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,7 +21,7 @@ import java.util.List;
 @Component
 public abstract class BaseTelegramBot extends TelegramLongPollingBot {
   private static final Logger log = LoggerFactory.getLogger(BaseTelegramBot.class);
-  public VideoNoteService videoNoteService = null;
+  public NoteService noteService = null;
 
   @Autowired
   protected BotProperties props;
@@ -45,12 +45,38 @@ public abstract class BaseTelegramBot extends TelegramLongPollingBot {
     try {
       File video = mediaService.getFileByKey(key); // просто по ключу
 
-      var sendVideoNote = videoNoteService.buildVideoNote(chatId, video);
+      var sendVideoNote = noteService.buildVideoNote(chatId, video);
       execute(sendVideoNote);
 
     } catch (Exception e) {
       e.printStackTrace();
       sendMessage(chatId, "Не удалось отправить видео для ключа circle", null);
+    }
+  }
+
+  public void sendAudioNote(Long chatId, String key) {
+    try {
+      File audio = mediaService.getFileByKey(key); // просто по ключу
+
+      var sendAudioNote = noteService.buildAudio(chatId, audio);
+      execute(sendAudioNote);
+
+    } catch (Exception e) {
+      e.printStackTrace();
+      sendMessage(chatId, "Не удалось отправить аудио для ключа circle", null);
+    }
+  }
+
+  public void sendVoiceNote(Long chatId, String key) {
+    try {
+      File voice = mediaService.getFileByKey(key); // просто по ключу
+
+      var sendVoiceNote = noteService.buildVoice(chatId, voice);
+      execute(sendVoiceNote);
+
+    } catch (Exception e) {
+      e.printStackTrace();
+      sendMessage(chatId, "Не удалось отправить голос для ключа circle", null);
     }
   }
 
