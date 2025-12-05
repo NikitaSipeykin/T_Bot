@@ -4,7 +4,8 @@ import java.util.List;
 
 public record OutgoingMessage(
     String text,
-    List<AnswerOption> options
+    List<AnswerOption> options,
+    boolean isNextTopic
 ) {}
 
 

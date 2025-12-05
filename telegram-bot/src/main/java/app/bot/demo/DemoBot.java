@@ -16,6 +16,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 
 import java.util.List;
+import java.util.Objects;
 
 @Component
 public class DemoBot extends BaseTelegramBot {
@@ -55,7 +56,7 @@ public class DemoBot extends BaseTelegramBot {
     String username = update.getMessage().getFrom().getUserName();
     String firstName = update.getMessage().getFrom().getFirstName();
 
-    if (chatId != 303885621){
+//    if (chatId != 303885621){
       if (messageText.equals(Commands.START)) {
         subscriberService.subscribe(chatId, username, firstName);
         startCommand(chatId, firstName);
@@ -67,10 +68,10 @@ public class DemoBot extends BaseTelegramBot {
       } else if (messageText.startsWith(Commands.BROADCAST)) {
         broadcastCommand(chatId, messageText, userId);
       } else stateProcessing(chatId, messageText);
-    }else {
-      sendMessage(chatId, text.get(TextMarker.ERROR), null);
-      log.info("Пользователь попытался взаимодействовать с ботом. chatId={}", chatId);
-    }
+//    }else {
+//      sendMessage(chatId, text.get(TextMarker.ERROR), null);
+//      log.info("Пользователь попытался взаимодействовать с ботом. chatId={}", chatId);
+//    }
   }
 
   @Override
@@ -78,35 +79,35 @@ public class DemoBot extends BaseTelegramBot {
     Long chatId = update.getCallbackQuery().getMessage().getChatId();
     String data = update.getCallbackQuery().getData();
 
+
     log.info("chatId = " + chatId + " data = " + data + " currentState = " + currentState);
     if (data.startsWith("TEST_Q_")) {
-      Object response = testService.processAnswer(chatId, data);
-      log.info("response = " + response);
-      if (response instanceof OutgoingMessage m) {
-        sendMessage(chatId, m.text(), toKeyboard(m.options()));
-      } else if (response instanceof FinalMessage f) {
-        sendMessage(chatId, f.text(), null);
-      }
+      testProcessing(chatId, data);
       return;
     }
 
     switch (data) {
       case TextMarker.PRESENT_GIDE -> {presentGide(chatId);}
-      case TextMarker.CHAKRA_INTRO -> {
-        startTest(chatId);
-      }
+      case TextMarker.CHAKRA_INTRO -> {startTest(chatId);}
+      case TextMarker.PRESENT -> {priseState(chatId);}
     }
   }
 
-  private void startTest(Long chatId) {
-    Object response = testService.startTest(chatId);
-    currentState = Commands.TEST_STATE;
-
+  private void testProcessing(Long chatId, String data) {
+    Object response = testService.processAnswer(chatId, data);
     log.info("response = " + response);
     if (response instanceof OutgoingMessage m) {
+      if (m.isNextTopic()){
+        sendMessage(chatId, text.format(TextMarker.GOT_YOU), null);
+      }
       sendMessage(chatId, m.text(), toKeyboard(m.options()));
     } else if (response instanceof FinalMessage f) {
       sendMessage(chatId, f.text(), null);
+      if (!Objects.equals(f.text(), text.format(TextMarker.ALL_ZERO)))
+      subscriberService.setFinishedTest(chatId);
+      sendMessage(chatId, text.format(TextMarker.RESULT),
+          keyboard(button("Хочу решения!", TextMarker.PRESENT)));
+
     }
   }
 
@@ -121,7 +122,6 @@ public class DemoBot extends BaseTelegramBot {
         .toList();
   }
 
-  // Актуально только тогда когда нужно получить текст от пользователя.
   private void stateProcessing(Long chatId, String messageText) {
     switch (currentState) {
       case Commands.DEFAULT_STATE -> sendMessage(chatId, text.get(TextMarker.ERROR), null);
@@ -143,6 +143,23 @@ public class DemoBot extends BaseTelegramBot {
     } catch (InterruptedException e) {
       throw new RuntimeException(e);
     }
+  }
+
+  private void startTest(Long chatId) {
+    if (!subscriberService.isFinishedTesting(chatId)){
+      Object response = testService.startTest(chatId);
+      currentState = Commands.TEST_STATE;
+
+      log.info("response = " + response);
+      if (response instanceof OutgoingMessage m) {
+        sendMessage(chatId, m.text(), toKeyboard(m.options()));
+      } else if (response instanceof FinalMessage f) {
+        sendMessage(chatId, f.text(), null);
+      }
+      return;
+    }
+    sendMessage(chatId, text.format(TextMarker.PRESENT_END),
+        keyboard(button("Хочу решения!", TextMarker.PRESENT)));
   }
 
   // STATE ==============================================
@@ -173,7 +190,7 @@ public class DemoBot extends BaseTelegramBot {
   }
 
   private void priseState(Long chatId) {
-    // TODO: отправить подарок
+    sendMessage(chatId, "priseState", null);
   }
 
   // COMMANDS ===========================================

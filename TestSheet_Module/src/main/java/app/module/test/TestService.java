@@ -9,6 +9,8 @@ import app.core.AnswerOption;
 import app.module.test.dao.TestQuestion;
 import app.module.test.repo.TestQuestionRepository;
 import app.module.test.repo.TestTopicRepository;
+import app.text.node.texts.BotTextService;
+import app.text.node.texts.TextMarker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -22,13 +24,15 @@ public class TestService {
   private final TestTopicRepository topicRepo;
   private final TestQuestionRepository questionRepo;
   private final TestResultRepository resultRepo;
+  private final BotTextService text;
 
   public TestService(TestStateService stateService, TestTopicRepository topicRepo, TestQuestionRepository questionRepo,
-                     TestResultRepository resultRepo) {
+                     TestResultRepository resultRepo, BotTextService text) {
     this.stateService = stateService;
     this.topicRepo = topicRepo;
     this.questionRepo = questionRepo;
     this.resultRepo = resultRepo;
+    this.text = text;
   }
 
   public OutgoingMessage startTest(Long chatId) {
@@ -47,6 +51,7 @@ public class TestService {
 
   public OutgoingMessage buildNextQuestion(Long chatId) {
     TestState state = stateService.get(chatId);
+    boolean isNextTopic = false;
 
     TestTopic topic = topicRepo
         .findByOrderIndex(state.getCurrentTopicIndex())
@@ -60,7 +65,6 @@ public class TestService {
             "Question not found: topic=" + topic.getId() + " num=" + state.getCurrentQuestionIndex()
         ));
 
-    // Создаём варианты ответа
     List<AnswerOption> options = List.of(
         new AnswerOption(1L, "Да",        buildCallback(question.getId(), 1L)),
         new AnswerOption(2L, "Иногда",    buildCallback(question.getId(), 2L)),
@@ -68,9 +72,13 @@ public class TestService {
         new AnswerOption(4L, "Нет",       buildCallback(question.getId(), 4L))
     );
 
+    if (state.getCurrentQuestionIndex() <= 1 && state.getCurrentTopicIndex() > 1){
+      isNextTopic = true;
+    }
+
     return new OutgoingMessage(
         question.getText().getValue(),
-        options
+        options, isNextTopic
     );
   }
 
@@ -101,10 +109,9 @@ public class TestService {
 
     state.getTopicScores().merge(topicId, score, Double::sum);
 
-    // следующий вопрос
     state.setCurrentQuestionIndex(state.getCurrentQuestionIndex() + 1);
 
-    if (state.getCurrentQuestionIndex() > 3) { // потому что вопросы 1-3
+    if (state.getCurrentQuestionIndex() > 3) {
       state.setCurrentQuestionIndex(1);
       state.setCurrentTopicIndex(state.getCurrentTopicIndex() + 1);
     }
@@ -122,10 +129,22 @@ public class TestService {
       TestTopic topic = topicRepo.findById(topicId).orElseThrow();
       resultRepo.save(new TestResult(chatId, topic, score));
     });
+
+    boolean allZero = state.getTopicScores()
+        .values()
+        .stream()
+        .allMatch(score -> score == 0);
+
+    if (allZero) {
+      stateService.reset(chatId);
+      return new FinalMessage(text.format(TextMarker.ALL_ZERO));
+    }
+
     var top2 = state.getTopicScores().entrySet().stream().sorted((a, b)
         -> Double.compare(b.getValue(), a.getValue())).limit(2).toList();
 
-    String msg = String.format("Ваши 2 самые дисбалансные чакры:\n1) %s — %.1f\n2) %s — %.1f",
+    String msg = String.format("Я проанализировал твои ответы и исходя из них, энергия застряла в:\n1) %s — %.1f\n2) %s — %.1f " +
+                               "/nНе переживай, есть решения!",
         topicRepo.findById(top2.get(0).getKey()).get().getName(), top2.get(0).getValue(),
         topicRepo.findById(top2.get(1).getKey()).get().getName(), top2.get(1).getValue());
 

@@ -39,4 +39,12 @@ public class SubscriberService {
   public void setVerified(Long chatId){
     repo.verify(chatId);
   }
+
+  public void setFinishedTest(Long chatId){
+    repo.finishedTest(chatId);
+  }
+
+  public boolean isFinishedTesting(Long chatId) {
+    return repo.isFinishedTest(chatId);
+  }
 }

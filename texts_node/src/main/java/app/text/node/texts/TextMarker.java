@@ -6,9 +6,11 @@ public class TextMarker {
   public static final String READY_TO_GIDE = "READY_TO_GIDE";
   public static final String CHAKRA_INTRO = "CHAKRA_INTRO";
 
-  public static final String RESAULT = "RESAULT";
-  public static final String DONT_WORRY = "DONT_WORRY";
+  public static final String RESULT = "RESULT";
+  public static final String GOT_YOU = "GOT_YOU";
   public static final String PRESENT = "PRESENT";
+
+  public static final String ALL_ZERO = "ALL_ZERO";
 
   public static final String PRESENT_END = "PRESENT_END";
   public static final String VIBRATIONS_AND_CHAKRAS = "VIBRATIONS_AND_CHAKRAS";
