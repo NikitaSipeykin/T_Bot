@@ -46,8 +46,6 @@ public class DemoBot extends BaseTelegramBot {
     this.text = text;
   }
 
-
-
   // PROCESSING =========================================
   @Override
   public void messageProcessing(Update update) {
@@ -57,17 +55,22 @@ public class DemoBot extends BaseTelegramBot {
     String username = update.getMessage().getFrom().getUserName();
     String firstName = update.getMessage().getFrom().getFirstName();
 
-    if (messageText.equals(Commands.START)) {
-      subscriberService.subscribe(chatId, username, firstName);
-      startCommand(chatId, firstName);
-    } else if (messageText.equals(Commands.CIRCLE)) {
+    if (chatId != 303885621){
+      if (messageText.equals(Commands.START)) {
+        subscriberService.subscribe(chatId, username, firstName);
+        startCommand(chatId, firstName);
+      } else if (messageText.equals(Commands.CIRCLE)) {
 //      sendVideoNote(chatId, Commands.KEY_START);
-      log.info("Пользователь попытался вызвать команду CIRCLE. chatId={}", chatId);
-    } else if (messageText.equals(Commands.UNSUBSCRIBE)) {
-      unsubscribeCommand(chatId);
-    } else if (messageText.startsWith(Commands.BROADCAST)) {
-      broadcastCommand(chatId, messageText, userId);
-    } else stateProcessing(chatId, messageText);
+        log.info("Пользователь попытался вызвать команду CIRCLE. chatId={}", chatId);
+      } else if (messageText.equals(Commands.UNSUBSCRIBE)) {
+        unsubscribeCommand(chatId);
+      } else if (messageText.startsWith(Commands.BROADCAST)) {
+        broadcastCommand(chatId, messageText, userId);
+      } else stateProcessing(chatId, messageText);
+    }else {
+      sendMessage(chatId, text.get(TextMarker.ERROR), null);
+      log.info("Пользователь попытался взаимодействовать с ботом. chatId={}", chatId);
+    }
   }
 
   @Override
@@ -86,7 +89,6 @@ public class DemoBot extends BaseTelegramBot {
       }
       return;
     }
-
 
     switch (data) {
       case TextMarker.PRESENT_GIDE -> {presentGide(chatId);}
@@ -133,6 +135,7 @@ public class DemoBot extends BaseTelegramBot {
   // EVENT ==============================================
   private void presentGide(Long chatId) {
     sendMessage(chatId, text.get(TextMarker.PRESENT_GIDE), null);
+    sendDocument(chatId, Commands.DOC_GIDE);
     try {
       Thread.sleep(30000);
       sendMessage(chatId, text.get(TextMarker.READY_TO_GIDE),
@@ -178,7 +181,7 @@ public class DemoBot extends BaseTelegramBot {
     sendMessage(chatId, text.format(TextMarker.START, firstName != null ? firstName : "друг"),
         keyboard(button("Да!", TextMarker.PRESENT_GIDE)));
     //todo: Add video-note
-    sendVideoNote(chatId, Commands.KEY_START);
+    sendVideoNote(chatId, Commands.VIDEO_START);
   }
 
   private void broadcastCommand(Long chatId, String messageText, Long userId) {

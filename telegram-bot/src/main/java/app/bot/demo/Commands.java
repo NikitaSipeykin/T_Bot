@@ -12,9 +12,10 @@ public class Commands {
   public static final String ADD_USER_TO_DB = "ADD_USER";
   public static final String SKIP = "SKIP";
 
-  // --- VIDEO KEYS ---
-  public static final String KEY_CIRCLE = "CIRCLE";
-  public static final String KEY_START = "START";
+  // --- FILE KEYS ---
+  public static final String VIDEO_CIRCLE = "VIDEO_CIRCLE";
+  public static final String VIDEO_START = "VIDEO_START";
+  public static final String DOC_GIDE = "DOC_GIDE";
 
   // --- STATE ---
   public static final int DEFAULT_STATE = 0;

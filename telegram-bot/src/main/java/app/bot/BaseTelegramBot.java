@@ -77,6 +77,18 @@ public abstract class BaseTelegramBot extends TelegramLongPollingBot  {
     }
   }
 
+  public void sendDocument(Long chatId, String key) {
+    try {
+      File doc = mediaService.getFileByKey(key);
+
+      var sendDocument = noteService.buildPdf(chatId, doc);
+      execute(sendDocument);
+
+    } catch (Exception e) {
+      log.error("Не удалось отправить файл сообщение chatId={}", chatId, e);
+    }
+  }
+
   public void sendMessage(Long chatId, String text, List<List<InlineKeyboardButton>> buttons) {
     SendMessage message = new SendMessage(chatId.toString(), text);
 
