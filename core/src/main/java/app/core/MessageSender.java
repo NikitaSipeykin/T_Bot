@@ -1,5 +1,5 @@
 package app.core;
 
 public interface MessageSender {
-  void send(Long chatId, String text);
+  void sendText(Long chatId, String text);
 }

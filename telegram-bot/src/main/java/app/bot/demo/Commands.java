@@ -21,4 +21,5 @@ public class Commands {
   public static final int MAIL_REQUEST_STATE = 1;
   public static final int WAIT_MAIL_STATE = 2;
   public static final int PRISE_STATE = 3;
+  public static final int TEST_STATE = 4;
 }

@@ -19,7 +19,7 @@ import java.util.Collections;
 import java.util.List;
 
 @Component
-public abstract class BaseTelegramBot extends TelegramLongPollingBot {
+public abstract class BaseTelegramBot extends TelegramLongPollingBot  {
   private static final Logger log = LoggerFactory.getLogger(BaseTelegramBot.class);
   public NoteService noteService = null;
 
@@ -43,40 +43,37 @@ public abstract class BaseTelegramBot extends TelegramLongPollingBot {
   // ======== TOOLS ============
   public void sendVideoNote(Long chatId, String key) {
     try {
-      File video = mediaService.getFileByKey(key); // просто по ключу
+      File video = mediaService.getFileByKey(key);
 
       var sendVideoNote = noteService.buildVideoNote(chatId, video);
       execute(sendVideoNote);
 
     } catch (Exception e) {
-      e.printStackTrace();
-      sendMessage(chatId, "Не удалось отправить видео для ключа circle", null);
+      log.error("Не удалось отправить кругетс chatId={}", chatId, e);
     }
   }
 
   public void sendAudioNote(Long chatId, String key) {
     try {
-      File audio = mediaService.getFileByKey(key); // просто по ключу
+      File audio = mediaService.getFileByKey(key);
 
       var sendAudioNote = noteService.buildAudio(chatId, audio);
       execute(sendAudioNote);
 
     } catch (Exception e) {
-      e.printStackTrace();
-      sendMessage(chatId, "Не удалось отправить аудио для ключа circle", null);
+      log.error("Не удалось отправить аудио chatId={}", chatId, e);
     }
   }
 
   public void sendVoiceNote(Long chatId, String key) {
     try {
-      File voice = mediaService.getFileByKey(key); // просто по ключу
+      File voice = mediaService.getFileByKey(key);
 
       var sendVoiceNote = noteService.buildVoice(chatId, voice);
       execute(sendVoiceNote);
 
     } catch (Exception e) {
-      e.printStackTrace();
-      sendMessage(chatId, "Не удалось отправить голос для ключа circle", null);
+      log.error("Не удалось отправить голосовое сообщение chatId={}", chatId, e);
     }
   }
 

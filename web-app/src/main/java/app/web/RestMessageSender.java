@@ -1,9 +1,12 @@
 package app.web;
 
+import app.core.AnswerOption;
 import app.core.MessageSender;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
+
+import java.util.List;
 
 @Component
 public class RestMessageSender implements MessageSender {
@@ -16,7 +19,7 @@ public class RestMessageSender implements MessageSender {
   }
 
   @Override
-  public void send(Long chatId, String text) {
+  public void sendText(Long chatId, String text) {
     String url = botInternalUrl;
 
     var payload = new java.util.HashMap<String, Object>();

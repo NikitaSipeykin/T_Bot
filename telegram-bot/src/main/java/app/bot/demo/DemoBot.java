@@ -2,33 +2,51 @@ package app.bot.demo;
 
 import app.bot.BaseTelegramBot;
 import app.bot.TelegramMessageSender;
+import app.core.AnswerOption;
 import app.bot.email.EmailService;
+import app.core.*;
+import app.module.test.TestService;
 import app.text.node.texts.BotTextService;
-import app.core.BroadcastService;
-import app.core.SubscriberService;
+import app.text.node.texts.TextMarker;
 import app.video.node.NoteService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
+
+import java.util.List;
 
 @Component
 public class DemoBot extends BaseTelegramBot {
+  private static final Logger log = LoggerFactory.getLogger(DemoBot.class);
+
   private final SubscriberService subscriberService;
   private final BroadcastService broadcastService;
   private final EmailService emailService;
+  private final TestService testService;
   private final BotTextService text;
 
-  private int currentState = 0;
+  private int currentState;
 
 
-  public DemoBot(SubscriberService subscriberService, EmailService emailService, BotTextService text,
-                 NoteService NoteService) {
+  public DemoBot(
+      SubscriberService subscriberService,
+      EmailService emailService,
+      BotTextService text,
+      NoteService noteService,
+      TestService testService
+  ) {
     this.emailService = emailService;
+    this.testService = testService;
     this.noteService = noteService;
     TelegramMessageSender messageSender = new TelegramMessageSender(this);
     this.subscriberService = subscriberService;
     this.broadcastService = new BroadcastService(subscriberService, messageSender);
     this.text = text;
   }
+
+
 
   // PROCESSING =========================================
   @Override
@@ -43,7 +61,8 @@ public class DemoBot extends BaseTelegramBot {
       subscriberService.subscribe(chatId, username, firstName);
       startCommand(chatId, firstName);
     } else if (messageText.equals(Commands.CIRCLE)) {
-      sendVideoNote(chatId, Commands.KEY_START);
+//      sendVideoNote(chatId, Commands.KEY_START);
+      log.info("Пользователь попытался вызвать команду CIRCLE. chatId={}", chatId);
     } else if (messageText.equals(Commands.UNSUBSCRIBE)) {
       unsubscribeCommand(chatId);
     } else if (messageText.startsWith(Commands.BROADCAST)) {
@@ -56,25 +75,70 @@ public class DemoBot extends BaseTelegramBot {
     Long chatId = update.getCallbackQuery().getMessage().getChatId();
     String data = update.getCallbackQuery().getData();
 
-    switch (data) {
-      case Commands.FIRST -> {
-        sendMessage(chatId, text.get("FIRST_STEP"), null);
-        currentState = Commands.MAIL_REQUEST_STATE;
+    log.info("chatId = " + chatId + " data = " + data + " currentState = " + currentState);
+    if (data.startsWith("TEST_Q_")) {
+      Object response = testService.processAnswer(chatId, data);
+      log.info("response = " + response);
+      if (response instanceof OutgoingMessage m) {
+        sendMessage(chatId, m.text(), toKeyboard(m.options()));
+      } else if (response instanceof FinalMessage f) {
+        sendMessage(chatId, f.text(), null);
       }
-      case Commands.SECOND -> {
-        sendMessage(chatId, text.get("SECOND_STEP"), null);
-        currentState = Commands.DEFAULT_STATE;
+      return;
+    }
+
+
+    switch (data) {
+      case TextMarker.PRESENT_GIDE -> {presentGide(chatId);}
+      case TextMarker.CHAKRA_INTRO -> {
+        startTest(chatId);
       }
     }
   }
 
+  private void startTest(Long chatId) {
+    Object response = testService.startTest(chatId);
+    currentState = Commands.TEST_STATE;
+
+    log.info("response = " + response);
+    if (response instanceof OutgoingMessage m) {
+      sendMessage(chatId, m.text(), toKeyboard(m.options()));
+    } else if (response instanceof FinalMessage f) {
+      sendMessage(chatId, f.text(), null);
+    }
+  }
+
+  private List<List<InlineKeyboardButton>> toKeyboard(List<AnswerOption> opts) {
+    return opts.stream()
+        .map(opt -> List.of(
+            InlineKeyboardButton.builder()
+                .text(opt.getText())
+                .callbackData(opt.getCallback())
+                .build()
+        ))
+        .toList();
+  }
+
+  // Актуально только тогда когда нужно получить текст от пользователя.
   private void stateProcessing(Long chatId, String messageText) {
     switch (currentState) {
-      case Commands.DEFAULT_STATE -> sendMessage(chatId, text.get("ERROR"), null);
+      case Commands.DEFAULT_STATE -> sendMessage(chatId, text.get(TextMarker.ERROR), null);
       case Commands.MAIL_REQUEST_STATE -> emailRequestState(chatId, messageText);
       case Commands.WAIT_MAIL_STATE -> waitMailState(chatId, messageText);
       case Commands.PRISE_STATE -> priseState(chatId);
-      default -> sendMessage(chatId, "Проверьте состояние.", null);
+      default -> log.error("Проверьте работу состояний. или последовательность действий");
+    }
+  }
+
+  // EVENT ==============================================
+  private void presentGide(Long chatId) {
+    sendMessage(chatId, text.get(TextMarker.PRESENT_GIDE), null);
+    try {
+      Thread.sleep(30000);
+      sendMessage(chatId, text.get(TextMarker.READY_TO_GIDE),
+          keyboard(button("Да, проверим чакры!", TextMarker.CHAKRA_INTRO)));
+    } catch (InterruptedException e) {
+      throw new RuntimeException(e);
     }
   }
 
@@ -111,24 +175,26 @@ public class DemoBot extends BaseTelegramBot {
 
   // COMMANDS ===========================================
   private void startCommand(Long chatId, String firstName) {
-    sendMessage(chatId, text.format("START", firstName != null ? firstName : "друг"),
-        keyboard(button("Приступим?", Commands.FIRST)));
+    sendMessage(chatId, text.format(TextMarker.START, firstName != null ? firstName : "друг"),
+        keyboard(button("Да!", TextMarker.PRESENT_GIDE)));
+    //todo: Add video-note
+    sendVideoNote(chatId, Commands.KEY_START);
   }
 
   private void broadcastCommand(Long chatId, String messageText, Long userId) {
-    // Для безопасности — разрешим только админскую команду
     Long adminId = props.getAdminId();
     if (adminId != null && adminId.equals(userId)) {
       String body = messageText.substring("/broadcast ".length());
       broadcastService.broadcast(body);
     } else {
-      sendMessage(chatId, text.get("BROADCAST_FAIL"), null);
+      sendMessage(chatId, text.get(TextMarker.BROADCAST_FAIL), null);
+
     }
   }
 
   private void unsubscribeCommand(Long chatId) {
     subscriberService.unsubscribe(chatId);
-    sendMessage(chatId, text.get("UNSUBSCRIBE"), null);
+    sendMessage(chatId, text.get(TextMarker.UNSUBSCRIBE), null);
   }
 }
 
