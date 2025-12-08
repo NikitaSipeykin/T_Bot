@@ -22,6 +22,7 @@
         <module>web-app</module>
         <module>texts_node</module>
         <module>video-note_node</module>
+        <module>TestSheet_Module</module>
     </modules>
 
     <properties>

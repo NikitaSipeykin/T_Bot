@@ -1,12 +1,14 @@
 package app.core;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 public class BroadcastService {
-
+  private static final Logger log = LoggerFactory.getLogger(BroadcastService.class);
   private final SubscriberService subscriberService;
   private final MessageSender sender;
 
@@ -19,9 +21,9 @@ public class BroadcastService {
     List<Long> ids = subscriberService.getActiveSubscribers();
     for (Long id : ids) {
       try {
-        sender.send(id, text);
+        sender.sendText(id, text);
       } catch (Exception e) {
-        // логирование, retry и т.д. — можно добавить
+        log.error("Ошибка при попытке отправить рассылку!" + e);
       }
     }
   }

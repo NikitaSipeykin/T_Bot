@@ -82,6 +82,12 @@
 
         <dependency>
             <groupId>app.telegram.bot</groupId>
+            <artifactId>TestSheet_Module</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>app.telegram.bot</groupId>
             <artifactId>video-note_node</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>

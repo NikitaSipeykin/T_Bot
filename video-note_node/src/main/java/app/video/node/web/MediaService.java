@@ -7,6 +7,9 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -69,15 +72,19 @@ public class MediaService {
       throw new RuntimeException("No file assigned for key: " + key);
     }
 
-    InputStream is = minioService.download(filename);
-    File temp = File.createTempFile("media_", "_" + filename);
-    temp.deleteOnExit();
+    // 1. Создаём уникальную временную директорию
+    Path tempDir = Files.createTempDirectory("media_");
 
-    try (FileOutputStream fos = new FileOutputStream(temp)) {
-      is.transferTo(fos);
+    // 2. Формируем путь к файлу с оригинальным именем
+    Path filePath = tempDir.resolve(filename);
+
+    // 3. Качаем файл из MinIO и записываем на диск
+    try (InputStream is = minioService.download(filename)) {
+      Files.copy(is, filePath, StandardCopyOption.REPLACE_EXISTING);
     }
 
-    return temp;
+    // 4. Возвращаем file-объект на оригинальный файл
+    return filePath.toFile();
   }
 }
 

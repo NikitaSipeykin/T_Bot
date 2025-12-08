@@ -14,10 +14,11 @@ body {
 
 .container {
     background: white;
+    width: 100%;
     padding: 25px 30px;
     border-radius: 12px;
     box-shadow: 0 4px 18px rgba(0,0,0,0.1);
-    width: 420px;
+    max-width: 420px;
 }
 
 h2 {
@@ -80,7 +81,8 @@ button:hover {
 
 #header {
     text-align: center;
-    width: 480px;
+    width: 100%;
+    max-width: 480px;
 }
 
 .header{
@@ -101,4 +103,17 @@ button:hover {
 .video-row button {
     margin-left: 10px;
 }
+
+
+/* @media (max-width: 480px) {
+    .container {
+        padding: 20px 15px;
+    }
+
+    .header {
+        padding: 10px;
+        flex-direction: column;
+        gap: 10px;
+    }
+} */
 

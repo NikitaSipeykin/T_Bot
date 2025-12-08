@@ -55,4 +55,19 @@ public class SubscriberRepository {
          chatId
     );
   }
+
+  public void finishedTest(Long chatId){
+    jdbc.update(
+        "UPDATE subscribers SET finished_test = true WHERE chat_id = ?",
+        chatId
+    );
+  }
+
+  public Boolean isFinishedTest(Long chatId) {
+    return jdbc.queryForObject(
+        "SELECT finished_test FROM subscribers WHERE chat_id = ?",
+        Boolean.class,
+        chatId
+    );
+  }
 }

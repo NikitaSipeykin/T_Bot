@@ -3,7 +3,8 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Video Manager</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Video & Document Manager</title>
     <link rel="stylesheet" href="/css/styles.css">
 </head>
 
@@ -29,10 +30,34 @@
 
         <h3>Current Videos</h3>
         <div id="videoList"></div>
+
+        <!-- NEW: Documents section -->
+        <hr style="margin: 40px 0;">
+        <h2>Document Manager</h2>
+
+        <h3>Upload or Replace Document</h3>
+
+        <label>Choose document key:</label>
+        <select id="docKeySelect"></select>
+
+        <br><br>
+
+        <label>Choose document file:</label><br>
+        <input id="docFileInput" type="file" accept=".pdf,.doc,.docx,.txt,.xls,.xlsx">
+        <button onclick="uploadDocument()">Upload / Replace</button>
+
+        <hr style="margin: 25px 0;">
+
+        <h3>Current Documents</h3>
+        <div id="docList"></div>
+        <!-- END NEW -->
+
     </div>
 </div>
 
 <script src="/js/videos.js"></script>
+<script src="/js/documents.js"></script> <!-- NEW -->
+
 <script>
     fetch("/common/header.html")
         .then(res => res.text())

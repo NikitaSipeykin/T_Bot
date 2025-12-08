@@ -5,6 +5,7 @@ import org.telegram.telegrambots.meta.api.methods.send.SendAudio;
 import org.telegram.telegrambots.meta.api.methods.send.SendVideoNote;
 import org.telegram.telegrambots.meta.api.methods.send.SendVoice;
 import org.telegram.telegrambots.meta.api.objects.InputFile;
+import org.telegram.telegrambots.meta.api.methods.send.SendDocument;
 
 import java.io.File;
 
@@ -15,9 +16,6 @@ public class NoteService {
     SendVideoNote note = new SendVideoNote();
     note.setChatId(chatId);
     note.setVideoNote(new InputFile(videoFile));
-
-    // опционально
-    // note.setDuration(30);
 
     return note;
   }
@@ -36,5 +34,13 @@ public class NoteService {
     voice.setAudio(new InputFile(audioFile));
 
     return voice;
+  }
+
+  public SendDocument buildPdf(Long chatId, File pdfFile) {
+    SendDocument document = new SendDocument();
+    document.setChatId(chatId);
+    document.setDocument(new InputFile(pdfFile));
+
+    return document;
   }
 }
