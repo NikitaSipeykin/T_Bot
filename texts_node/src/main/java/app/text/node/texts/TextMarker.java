@@ -11,12 +11,24 @@ public class TextMarker {
   public static final String PRESENT = "PRESENT";
 
   public static final String ALL_ZERO = "ALL_ZERO";
+  public static final String NO_RESULTS = "NO_RESULTS";
+  public static final String ALL_ZERO_RESULT = "ALL_ZERO_RESULT";
+  public static final String RECOMMENDATIONS_INTRO = "RECOMMENDATIONS_INTRO";
 
-  public static final String PRESENT_END = "PRESENT_END";
+  public static final String TEST_END = "TEST_END";
+  public static final String TEST_END_ALREADY = "TEST_END_ALREADY";
+
   public static final String VIBRATIONS_AND_CHAKRAS = "VIBRATIONS_AND_CHAKRAS";
+
+  public static final String PROGRAM_BEGIN = "PROGRAM_BEGIN";
+  public static final String PROGRAM_BEGIN_QUESTIONS = "PROGRAM_BEGIN_QUESTIONS";
+  public static final String PROGRAM = "PROGRAM";
 
   public static final String BROADCAST_FAIL = "BROADCAST_FAIL";
   public static final String UNSUBSCRIBE = "UNSUBSCRIBE";
   public static final String ERROR = "ERROR";
+
+  public static final String PAYMENT = "PAYMENT";
+  public static final String DEBUG = "DEBUG";
 }
 

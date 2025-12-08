@@ -5,6 +5,7 @@ public class Commands {
   public static final String BROADCAST = "/broadcast";
   public static final String UNSUBSCRIBE = "/unsubscribe";
   public static final String CIRCLE = "/circle";
+  public static final String DEBUG = "/debug";
 
   // --- CALLBACK COMMANDS ---
   public static final String FIRST = "FIRST";
@@ -23,4 +24,5 @@ public class Commands {
   public static final int WAIT_MAIL_STATE = 2;
   public static final int PRISE_STATE = 3;
   public static final int TEST_STATE = 4;
+  public static final int PROGRAM_STATE = 5;
 }

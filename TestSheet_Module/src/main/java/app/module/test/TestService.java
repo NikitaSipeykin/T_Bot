@@ -15,7 +15,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class TestService {
@@ -25,6 +27,8 @@ public class TestService {
   private final TestQuestionRepository questionRepo;
   private final TestResultRepository resultRepo;
   private final BotTextService text;
+
+  private final Map<Long, List<String>> resultTopics = new HashMap<Long, List<String>>();
 
   public TestService(TestStateService stateService, TestTopicRepository topicRepo, TestQuestionRepository questionRepo,
                      TestResultRepository resultRepo, BotTextService text) {
@@ -66,13 +70,13 @@ public class TestService {
         ));
 
     List<AnswerOption> options = List.of(
-        new AnswerOption(1L, "Да",        buildCallback(question.getId(), 1L)),
-        new AnswerOption(2L, "Иногда",    buildCallback(question.getId(), 2L)),
+        new AnswerOption(1L, "Да", buildCallback(question.getId(), 1L)),
+        new AnswerOption(2L, "Иногда", buildCallback(question.getId(), 2L)),
         new AnswerOption(3L, "Не уверен", buildCallback(question.getId(), 3L)),
-        new AnswerOption(4L, "Нет",       buildCallback(question.getId(), 4L))
+        new AnswerOption(4L, "Нет", buildCallback(question.getId(), 4L))
     );
 
-    if (state.getCurrentQuestionIndex() <= 1 && state.getCurrentTopicIndex() > 1){
+    if (state.getCurrentQuestionIndex() <= 1 && state.getCurrentTopicIndex() > 1) {
       isNextTopic = true;
     }
 
@@ -80,19 +84,6 @@ public class TestService {
         question.getText().getValue(),
         options, isNextTopic
     );
-  }
-
-  private String buildCallback(Long qId, Long aId) {
-    return "TEST_Q_" + qId + "_A_" + aId;
-  }
-
-  private double getScoreByAnswerId(Long aId) {
-    return switch (aId.intValue()) {
-      case 1 -> 1.0;
-      case 2, 3 -> 0.5;
-      case 4 -> 0;
-      default -> throw new IllegalArgumentException("Unknown answer id: " + aId);
-    };
   }
 
   public Object processAnswer(Long chatId, String data) {
@@ -125,30 +116,75 @@ public class TestService {
 
   private FinalMessage finishTest(Long chatId) {
     TestState state = stateService.get(chatId);
+
     state.getTopicScores().forEach((topicId, score) -> {
       TestTopic topic = topicRepo.findById(topicId).orElseThrow();
       resultRepo.save(new TestResult(chatId, topic, score));
     });
+    var scores = state.getTopicScores();
 
-    boolean allZero = state.getTopicScores()
-        .values()
-        .stream()
-        .allMatch(score -> score == 0);
+    boolean allZero = scores.values().stream().allMatch(score -> score == 0);
 
     if (allZero) {
       stateService.reset(chatId);
-      return new FinalMessage(text.format(TextMarker.ALL_ZERO));
+      log.info("finishTest - ALL_ZERO");
+      return new FinalMessage(text.format(TextMarker.ALL_ZERO), null);
+    }
+
+    List<Map.Entry<Long, Double>> nonZeroTopics = scores.entrySet().stream()
+        .filter(e -> e.getValue() > 0)
+        .toList();
+
+    if (nonZeroTopics.size() == 1) {
+      var t = nonZeroTopics.get(0);
+      TestTopic topic = topicRepo.findById(t.getKey()).orElseThrow();
+      String msg = String.format("Я проанализировал твои ответы и обнаружил, что энергия застряла в:" +
+                                 "\n\n• %s — %.1f\n\n" +
+                                 "Это единственный дисбаланс ❤️",
+          topic.getName(), t.getValue()
+      );
+
+      stateService.reset(chatId);
+      return new FinalMessage(msg, List.of(topic.getName()));
     }
 
     var top2 = state.getTopicScores().entrySet().stream().sorted((a, b)
         -> Double.compare(b.getValue(), a.getValue())).limit(2).toList();
 
-    String msg = String.format("Я проанализировал твои ответы и исходя из них, энергия застряла в:\n1) %s — %.1f\n2) %s — %.1f " +
-                               "/nНе переживай, есть решения!",
+    String msg = String.format("Я проанализировал твои ответы и исходя из них, энергия застряла в: \n" +
+                               "1) %s — %.1f\n" +
+                               "2) %s — %.1f\n" +
+                               "Не переживай, есть решения!",
         topicRepo.findById(top2.get(0).getKey()).get().getName(), top2.get(0).getValue(),
         topicRepo.findById(top2.get(1).getKey()).get().getName(), top2.get(1).getValue());
 
     stateService.reset(chatId);
-    return new FinalMessage(msg);
+    return new FinalMessage(msg, List.of(
+        topicRepo.findById(top2.get(0).getKey()).get().getName(),
+        topicRepo.findById(top2.get(1).getKey()).get().getName()));
+  }
+
+  private String buildCallback(Long qId, Long aId) {
+    return "TEST_Q_" + qId + "_A_" + aId;
+  }
+
+  private double getScoreByAnswerId(Long aId) {
+    return switch (aId.intValue()) {
+      case 1 -> 1.0;
+      case 2, 3 -> 0.5;
+      case 4 -> 0;
+      default -> throw new IllegalArgumentException("Unknown answer id: " + aId);
+    };
+  }
+
+  public void saveResultTopics(Long chatId, List<String> names) {
+    resultTopics.put(chatId, names);
+    log.info("resultTopics save = " + resultTopics);
+  }
+
+  public List<String> getResultTopics(Long chatId) {
+    log.info("resultTopics get = " + resultTopics);
+    return resultTopics.getOrDefault(chatId, List.of());
+
   }
 }
