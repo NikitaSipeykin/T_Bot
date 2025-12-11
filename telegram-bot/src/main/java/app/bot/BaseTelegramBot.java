@@ -1,10 +1,14 @@
 package app.bot;
 
+import app.core.AnswerOption;
+import app.core.DailyUpdateResult;
+import app.module.program.ProgramProgressService;
+import app.module.program.ProgramService;
 import app.video.node.NoteService;
 import app.video.node.web.MediaService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -21,9 +25,10 @@ import java.util.Collections;
 import java.util.List;
 
 @Component
+@Slf4j
 public abstract class BaseTelegramBot extends TelegramLongPollingBot  {
-  private static final Logger log = LoggerFactory.getLogger(BaseTelegramBot.class);
   public NoteService noteService = null;
+  public ProgramService programService = null;
 
   @Autowired
   protected BotProperties props;
@@ -138,6 +143,17 @@ public abstract class BaseTelegramBot extends TelegramLongPollingBot  {
     }
   }
 
+  protected List<List<InlineKeyboardButton>> toKeyboard(List<AnswerOption> opts) {
+    return opts.stream()
+        .map(opt -> List.of(
+            InlineKeyboardButton.builder()
+                .text(opt.getText())
+                .callbackData(opt.getCallback())
+                .build()
+        ))
+        .toList();
+  }
+
   // ======== PROPERTIES =======
   @Override
   public String getBotUsername() {
@@ -152,4 +168,5 @@ public abstract class BaseTelegramBot extends TelegramLongPollingBot  {
   // ======== ABSTRACT ========
   public abstract void messageProcessing(Update update);
   public abstract void callbackProcessing(Update update);
+  public abstract void scheduledDailyUpdate();
 }

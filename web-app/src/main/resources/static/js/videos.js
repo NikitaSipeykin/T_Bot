@@ -10,23 +10,29 @@ async function loadVideoSettings() {
 
     loadSelectVideoKeys();
     loadSelectDocKeys();
+    loadSelectAudioKeys();
 
     renderVideoList();
     renderDocList();
+    renderAudioList();
 }
 
 function splitKeysByType() {
     videoKeys = {};
     docKeys = {};
+    audioKeys = {};
 
     Object.entries(settings).forEach(([key, file]) => {
         if (key.startsWith("VIDEO_")) {
             videoKeys[key] = file;
         } else if (key.startsWith("DOC_")) {
             docKeys[key] = file;
+        } else if (key.startsWith("PROGRAM_")) {   // ← НОВОЕ
+            audioKeys[key] = file;
         }
     });
 }
+
 
 /* ------------------------ VIDEO ------------------------ */
 
@@ -141,6 +147,64 @@ async function uploadDocument() {
     fileInput.value = "";
     loadVideoSettings();
 }
+
+/* ------------------------ AUDIO ------------------------ */
+
+function loadSelectAudioKeys() {
+    const sel = document.getElementById("audioKeySelect");
+    sel.innerHTML = "";
+
+    Object.keys(audioKeys).forEach(key => {
+        const opt = document.createElement("option");
+        opt.value = key;
+        opt.textContent = key;
+        sel.appendChild(opt);
+    });
+}
+
+function renderAudioList() {
+    const list = document.getElementById("audioList");
+    list.innerHTML = "";
+
+    Object.entries(audioKeys).forEach(([key, fileName]) => {
+        const block = document.createElement("div");
+        block.className = "text-item";
+
+        block.innerHTML = `
+            <div>
+                <b>Key:</b> ${key}<br>
+                <b>File:</b> ${fileName}<br><br>
+                <audio controls src="/media/${fileName}" style="width:200px"></audio><br><br>
+                <button onclick="deleteFile('${fileName}', '${key}')">Delete</button>
+            </div>
+        `;
+
+        list.appendChild(block);
+    });
+}
+
+async function uploadAudio() {
+    const key = document.getElementById("audioKeySelect").value;
+    const fileInput = document.getElementById("audioFileInput");
+
+    if (!fileInput.files.length) {
+        alert("Выберите аудиофайл");
+        return;
+    }
+
+    const form = new FormData();
+    form.append("key", key);
+    form.append("file", fileInput.files[0]);
+
+    await fetch("/media/upload", {
+        method: "POST",
+        body: form
+    });
+
+    fileInput.value = "";
+    loadVideoSettings();
+}
+
 
 /* ------------------------ COMMON (DELETE) ------------------------ */
 

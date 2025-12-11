@@ -25,4 +25,5 @@ public class Commands {
   public static final int PRISE_STATE = 3;
   public static final int TEST_STATE = 4;
   public static final int PROGRAM_STATE = 5;
+  public static final int PAYMENT = 6;
 }

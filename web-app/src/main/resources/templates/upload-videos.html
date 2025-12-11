@@ -9,60 +9,80 @@
 </head>
 
 <body>
-<div class="wrapper">
-    <div id="header"></div>
+    <div class="wrapper">
+        <div id="header"></div>
 
-    <div class="container">
-        <h2>Video Manager</h2>
+        <div class="container">
+            <h2>Video Manager</h2>
 
-        <h3>Replace video for existing key</h3>
+            <h3>Replace video for existing key</h3>
 
-        <label>Choose key:</label>
-        <select id="keySelect"></select>
+            <label>Choose key:</label>
+            <select id="keySelect"></select>
 
-        <br><br>
+            <br><br>
 
-        <label>Choose new file:</label><br>
-        <input id="fileInput" type="file" accept="video/*">
-        <button onclick="uploadVideo()">Upload / Replace</button>
+            <label>Choose new file:</label><br>
+            <input id="fileInput" type="file" accept="video/*">
+            <button onclick="uploadVideo()">Upload / Replace</button>
 
-        <hr style="margin: 25px 0;">
+            <hr style="margin: 25px 0;">
 
-        <h3>Current Videos</h3>
-        <div id="videoList"></div>
+            <h3>Current Videos</h3>
+            <div id="videoList"></div>
 
-        <!-- NEW: Documents section -->
-        <hr style="margin: 40px 0;">
-        <h2>Document Manager</h2>
+            <!-- NEW: Documents section -->
+            <hr style="margin: 40px 0;">
+            <h2>Document Manager</h2>
 
-        <h3>Upload or Replace Document</h3>
+            <h3>Upload or Replace Document</h3>
 
-        <label>Choose document key:</label>
-        <select id="docKeySelect"></select>
+            <label>Choose document key:</label>
+            <select id="docKeySelect"></select>
 
-        <br><br>
+            <br><br>
 
-        <label>Choose document file:</label><br>
-        <input id="docFileInput" type="file" accept=".pdf,.doc,.docx,.txt,.xls,.xlsx">
-        <button onclick="uploadDocument()">Upload / Replace</button>
+            <label>Choose document file:</label><br>
+            <input id="docFileInput" type="file" accept=".pdf,.doc,.docx,.txt,.xls,.xlsx">
+            <button onclick="uploadDocument()">Upload / Replace</button>
 
-        <hr style="margin: 25px 0;">
+            <hr style="margin: 25px 0;">
 
-        <h3>Current Documents</h3>
-        <div id="docList"></div>
-        <!-- END NEW -->
+            <h3>Current Documents</h3>
+            <div id="docList"></div>
+            
 
+            <!-- NEW: Audio section -->
+            <hr style="margin: 40px 0;">
+            <h2>Audio Manager</h2>
+
+            <h3>Upload or Replace Audio</h3>
+
+            <label>Choose audio key:</label>
+            <select id="audioKeySelect"></select>
+
+            <br><br>
+
+            <label>Choose audio file:</label><br>
+            <input id="audioFileInput" type="file" accept="audio/*">
+            <button onclick="uploadAudio()">Upload / Replace</button>
+
+            <hr style="margin: 25px 0;">
+
+            <h3>Current Audio Files</h3>
+            <div id="audioList"></div>
+        </div>
     </div>
-</div>
 
-<script src="/js/videos.js"></script>
-<script src="/js/documents.js"></script> <!-- NEW -->
+    <script src="/js/videos.js"></script>
+    <script src="/js/documents.js"></script> <!-- NEW -->
 
-<script>
-    fetch("/common/header.html")
-        .then(res => res.text())
-        .then(html => document.getElementById("header").innerHTML = html);
-</script>
+    <script>
+        fetch("/common/header.html")
+            .then(res => res.text())
+            .then(html => document.getElementById("header").innerHTML = html);
+    </script>
 
 </body>
+
 </html>
