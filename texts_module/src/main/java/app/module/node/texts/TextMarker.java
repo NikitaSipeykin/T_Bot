@@ -1,4 +1,4 @@
-package app.text.node.texts;
+package app.module.node.texts;
 
 public class TextMarker {
   public static final String START = "START";

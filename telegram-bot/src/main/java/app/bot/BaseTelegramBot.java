@@ -1,14 +1,11 @@
 package app.bot;
 
 import app.core.AnswerOption;
-import app.core.DailyUpdateResult;
-import app.module.program.ProgramProgressService;
 import app.module.program.ProgramService;
-import app.video.node.NoteService;
-import app.video.node.web.MediaService;
+import app.module.node.NoteService;
+import app.module.node.web.MediaService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;

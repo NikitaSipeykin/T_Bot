@@ -76,7 +76,7 @@
 
         <dependency>
             <groupId>app.telegram.bot</groupId>
-            <artifactId>texts_node</artifactId>
+            <artifactId>texts_module</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
 
@@ -88,7 +88,7 @@
 
         <dependency>
             <groupId>app.telegram.bot</groupId>
-            <artifactId>video-note_node</artifactId>
+            <artifactId>media-note_module</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
 

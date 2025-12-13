@@ -1,4 +1,4 @@
-package app.text.node.texts;
+package app.module.node.texts;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

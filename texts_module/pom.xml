@@ -9,7 +9,7 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>texts_node</artifactId>
+    <artifactId>texts_module</artifactId>
 
     <dependencies>
 

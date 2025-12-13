@@ -1,6 +1,6 @@
 package app.web.texts;
 
-import app.text.node.texts.BotText;
+import app.module.node.texts.BotText;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -12,7 +12,7 @@ public class TextSyncService {
 
   private final RestTemplate rest = new RestTemplate();
 
-  @Value("${bot.internal.update-text-url}")
+  @Value("${bot.internal.update-module-url}")
   private String updateUrl; // http://localhost:8081/internal/update-text
 
   public void sendToBot(BotText text) {

@@ -1,6 +1,6 @@
 package app.module.test.dao;
 
-import app.text.node.texts.BotText;
+import app.module.node.texts.BotText;
 import jakarta.persistence.*;
 
 @Entity

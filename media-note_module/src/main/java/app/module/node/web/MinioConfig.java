@@ -1,4 +1,4 @@
-package app.video.node.web;
+package app.module.node.web;
 
 import io.minio.MinioClient;
 import org.springframework.beans.factory.annotation.Value;

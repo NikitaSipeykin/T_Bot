@@ -1,4 +1,4 @@
-package app.video.node.web;
+package app.module.node.web;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;

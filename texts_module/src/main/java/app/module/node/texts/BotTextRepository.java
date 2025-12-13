@@ -1,4 +1,4 @@
-package app.text.node.texts;
+package app.module.node.texts;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

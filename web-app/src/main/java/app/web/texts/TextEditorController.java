@@ -1,7 +1,7 @@
 package app.web.texts;
 
-import app.text.node.texts.BotText;
-import app.text.node.texts.BotTextRepository;
+import app.module.node.texts.BotText;
+import app.module.node.texts.BotTextRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 

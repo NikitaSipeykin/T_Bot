@@ -9,11 +9,9 @@ import app.core.AnswerOption;
 import app.module.test.dao.TestQuestion;
 import app.module.test.repo.TestQuestionRepository;
 import app.module.test.repo.TestTopicRepository;
-import app.text.node.texts.BotTextService;
-import app.text.node.texts.TextMarker;
+import app.module.node.texts.BotTextService;
+import app.module.node.texts.TextMarker;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
