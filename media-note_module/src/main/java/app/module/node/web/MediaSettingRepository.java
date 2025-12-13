@@ -1,4 +1,4 @@
-package app.video.node.web;
+package app.module.node.web;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

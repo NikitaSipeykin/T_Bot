@@ -20,8 +20,8 @@
         <module>core</module>
         <module>telegram-bot</module>
         <module>web-app</module>
-        <module>texts_node</module>
-        <module>video-note_node</module>
+        <module>texts_module</module>
+        <module>media-note_module</module>
         <module>TestSheet_Module</module>
     </modules>
 

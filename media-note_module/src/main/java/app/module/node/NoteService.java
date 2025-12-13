@@ -1,4 +1,4 @@
-package app.video.node;
+package app.module.node;
 
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendAudio;

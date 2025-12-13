@@ -3,7 +3,7 @@ package app.module.program;
 import app.core.AnswerOption;
 import app.core.DailyUpdateResult;
 import app.core.ProgramMessage;
-import app.text.node.texts.TextMarker;
+import app.module.node.texts.TextMarker;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 

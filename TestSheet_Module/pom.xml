@@ -59,7 +59,7 @@
 
         <dependency>
             <groupId>app.telegram.bot</groupId>
-            <artifactId>texts_node</artifactId>
+            <artifactId>texts_module</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
 

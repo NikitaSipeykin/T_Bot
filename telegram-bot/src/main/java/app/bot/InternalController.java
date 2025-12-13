@@ -1,7 +1,7 @@
 package app.bot;
 
-import app.text.node.texts.BotText;
-import app.text.node.texts.BotTextRepository;
+import app.module.node.texts.BotText;
+import app.module.node.texts.BotTextRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -26,11 +26,11 @@ public class InternalController {
     bot.scheduledDailyUpdate();
   }
 
-  @PostMapping("/update-text")
+  @PostMapping("/update-module")
   public String update(@RequestBody BotText text) {
 
     repository.save(text);
-    System.out.println("Updated bot text: " + text.getId());
+    System.out.println("Updated bot module: " + text.getId());
 
     return "ok";
   }
