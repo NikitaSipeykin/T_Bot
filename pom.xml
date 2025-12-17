@@ -17,12 +17,13 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>core</module>
         <module>telegram-bot</module>
         <module>web-app</module>
-        <module>texts_module</module>
-        <module>media-note_module</module>
-        <module>TestSheet_Module</module>
+        <module>module_core</module>
+        <module>module_texts</module>
+        <module>module_media-note</module>
+        <module>module_content</module>
+        <module>module_payment</module>
     </modules>
 
     <properties>

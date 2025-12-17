@@ -1,6 +1,6 @@
 package app.web;
 
-import app.core.BroadcastService;
+import app.core.broadcast.BroadcastService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
