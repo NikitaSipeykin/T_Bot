@@ -28,13 +28,6 @@
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
 
-        <!-- Telegram -->
-        <dependency>
-            <groupId>app.telegram.bot</groupId>
-            <artifactId>core</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
-
         <!-- Lombok -->
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -42,17 +35,55 @@
             <optional>true</optional>
         </dependency>
 
+        <!-- Telegram -->
+        <dependency>
+            <groupId>app.telegram.bot</groupId>
+            <artifactId>module_core</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+
         <!-- MODULES -->
         <dependency>
             <groupId>app.telegram.bot</groupId>
-            <artifactId>texts_module</artifactId>
+            <artifactId>module_texts</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
 
         <dependency>
             <groupId>app.telegram.bot</groupId>
-            <artifactId>media-note_module</artifactId>
+            <artifactId>module_media-note</artifactId>
             <version>1.0-SNAPSHOT</version>
+        </dependency>
+
+        <!-- Test Dependencies -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-junit-jupiter</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-test</artifactId>
+            <scope>test</scope>
         </dependency>
 
     </dependencies>

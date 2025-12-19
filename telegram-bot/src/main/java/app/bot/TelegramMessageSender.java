@@ -1,11 +1,8 @@
 package app.bot;
 
-import app.core.AnswerOption;
+import app.bot.mane.BaseTelegramBot;
 import app.core.MessageSender;
 import org.springframework.stereotype.Component;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
-
-import java.util.List;
 
 @Component
 public class TelegramMessageSender implements MessageSender {

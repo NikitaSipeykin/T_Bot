@@ -1,5 +1,6 @@
 package app.bot;
 
+import app.bot.mane.BaseTelegramBot;
 import jakarta.annotation.PostConstruct;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
