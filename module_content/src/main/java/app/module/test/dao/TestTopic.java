@@ -29,7 +29,15 @@ public class TestTopic {
     return this.name;
   }
 
-  public int getOrderIndex() {
-    return this.orderIndex;
+  public void setId(Long id) {
+    this.id = id;
+  }
+
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  public void setOrderIndex(Integer orderIndex) {
+    this.orderIndex = orderIndex;
   }
 }

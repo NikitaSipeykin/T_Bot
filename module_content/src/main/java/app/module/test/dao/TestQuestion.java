@@ -38,4 +38,20 @@ public class TestQuestion {
   public Integer getNum() {
     return this.num;
   }
+
+  public void setId(Long id) {
+    this.id = id;
+  }
+
+  public void setTopic(TestTopic topic) {
+    this.topic = topic;
+  }
+
+  public void setText(BotText text) {
+    this.text = text;
+  }
+
+  public void setNum(Integer num) {
+    this.num = num;
+  }
 }

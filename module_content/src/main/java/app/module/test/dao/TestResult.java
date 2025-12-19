@@ -20,21 +20,6 @@ public class TestResult {
   private LocalDateTime finishedAt = LocalDateTime.now();
   private Integer lastQuestionNum = 0;
 
-  public void addScore(double value) {
-    if (this.score == null) {
-      this.score = 0.0;
-    }
-    this.score = this.score + value;
-  }
-
-  public boolean canAnswer(int questionNum) {
-    return this.lastQuestionNum == null || questionNum > this.lastQuestionNum;
-  }
-
-  public void markAnswered(int questionNum) {
-    this.lastQuestionNum = questionNum;
-  }
-
   public TestResult() {
   }
 
@@ -46,10 +31,6 @@ public class TestResult {
 
   public void setChatId(Long chatId) {
     this.chatId = chatId;
-  }
-
-  public void setTopic(TestTopic topic) {
-    this.topic = topic;
   }
 
   public Long getId() {

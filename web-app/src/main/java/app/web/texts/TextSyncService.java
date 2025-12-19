@@ -12,7 +12,7 @@ public class TextSyncService {
 
   private final RestTemplate rest = new RestTemplate();
 
-  @Value("${bot.internal.update-module-url}")
+  @Value("${bot.internal.url}")
   private String updateUrl; // http://localhost:8081/internal/update-text
 
   public void sendToBot(BotText text) {
