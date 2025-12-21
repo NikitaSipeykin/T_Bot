@@ -1,5 +1,6 @@
 package app.bot.handler.command;
 
+import app.bot.bot.responce.BotResponse;
 import app.module.node.texts.BotTextService;
 import app.module.node.texts.TextMarker;
 import app.core.broadcast.SubscriberService;
@@ -22,15 +23,12 @@ public class UnsubscribeCommandHandler implements CommandHandler {
   }
 
   @Override
-  public BotApiMethod<?> handle(Message message) {
+  public BotResponse handle(Message message) {
     Long chatId = message.getChatId();
 
     subscriberService.unsubscribe(chatId);
 
-    return SendMessage.builder()
-        .chatId(chatId.toString())
-        .text(textService.get(TextMarker.UNSUBSCRIBE))
-        .build();
+    return null;
   }
 }
 

@@ -4,8 +4,7 @@ import app.bot.config.BotProperties;
 import app.bot.dispatcher.CallbackDispatcher;
 import app.bot.dispatcher.CommandDispatcher;
 import app.bot.dispatcher.MessageDispatcher;
-import app.bot.dispatcher.MessageStateDispatcher;
-import app.bot.state.UserState;
+import app.bot.sender.TelegramSender;
 import app.bot.state.UserStateService;
 import app.core.payment.PaymentCommand;
 import app.module.payment.PaymentService;
@@ -13,9 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.AnswerPreCheckoutQuery;
-import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import org.telegram.telegrambots.meta.api.objects.payments.PreCheckoutQuery;
 
 @Component
 @Slf4j
@@ -26,9 +23,10 @@ public class DemoBot extends BaseTelegramBot {
 
   public DemoBot(
       BotProperties botProperties, CallbackDispatcher callbackDispatcher, CommandDispatcher commandDispatcher,
-      MessageDispatcher messageDispatcher, PaymentService paymentService, UserStateService userStateService
+      MessageDispatcher messageDispatcher, PaymentService paymentService, UserStateService userStateService,
+      TelegramSender telegramSender
   ) {
-    super(botProperties, callbackDispatcher, commandDispatcher, messageDispatcher);
+    super(botProperties, callbackDispatcher, commandDispatcher, messageDispatcher, telegramSender);
     this.paymentService = paymentService;
     this.userStateService = userStateService;
   }

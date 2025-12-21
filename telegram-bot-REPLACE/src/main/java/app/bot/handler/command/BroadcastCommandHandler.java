@@ -1,6 +1,7 @@
 package app.bot.handler.command;
 
 
+import app.bot.bot.responce.BotResponse;
 import app.bot.config.BotProperties;
 import app.core.broadcast.BroadcastService;
 import app.module.node.texts.BotTextService;
@@ -25,19 +26,19 @@ public class BroadcastCommandHandler implements CommandHandler {
   }
 
   @Override
-  public BotApiMethod<?> handle(Message message) {
-    Long chatId = message.getChatId();
-    Long userId = message.getFrom().getId();
-
-    if (!userId.equals(botProperties.getAdminId())) {
-      return SendMessage.builder()
-          .chatId(chatId.toString())
-          .text(textService.get(TextMarker.BROADCAST_FAIL))
-          .build();
-    }
-
-    String body = message.getText().substring("/broadcast".length()).trim();
-    broadcastService.broadcast(body);
+  public BotResponse handle(Message message) {
+//    Long chatId = message.getChatId();
+//    Long userId = message.getFrom().getId();
+//
+//    if (!userId.equals(botProperties.getAdminId())) {
+//      return SendMessage.builder()
+//          .chatId(chatId.toString())
+//          .text(textService.get(TextMarker.BROADCAST_FAIL))
+//          .build();
+//    }
+//
+//    String body = message.getText().substring("/broadcast".length()).trim();
+//    broadcastService.broadcast(body);
 
     return null; // админский silent-command
   }

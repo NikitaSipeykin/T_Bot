@@ -1,11 +1,11 @@
 package app.bot.handler.command;
 
-import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
+import app.bot.bot.responce.BotResponse;
 import org.telegram.telegrambots.meta.api.objects.Message;
 
 public interface CommandHandler {
 
   String command();
 
-  BotApiMethod<?> handle(Message message);
+  BotResponse handle(Message message);
 }

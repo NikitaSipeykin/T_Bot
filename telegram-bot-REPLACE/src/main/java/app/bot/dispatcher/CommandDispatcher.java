@@ -1,5 +1,6 @@
 package app.bot.dispatcher;
 
+import app.bot.bot.responce.BotResponse;
 import app.bot.handler.command.CommandHandler;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
@@ -19,7 +20,7 @@ public class CommandDispatcher {
         .collect(Collectors.toMap(CommandHandler::command, h -> h));
   }
 
-  public BotApiMethod<?> dispatch(Message message) {
+  public BotResponse dispatch(Message message) {
     String text = message.getText();
 
     if (text == null || !text.startsWith("/")) {

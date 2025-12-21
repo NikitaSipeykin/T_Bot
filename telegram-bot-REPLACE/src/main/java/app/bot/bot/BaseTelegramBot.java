@@ -1,14 +1,15 @@
 package app.bot.bot;
 
+import app.bot.bot.responce.BotResponse;
 import app.bot.config.BotProperties;
 import app.bot.dispatcher.CallbackDispatcher;
 import app.bot.dispatcher.CommandDispatcher;
 import app.bot.dispatcher.MessageDispatcher;
+import app.bot.sender.TelegramSender;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
-import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
@@ -20,17 +21,19 @@ public abstract class BaseTelegramBot extends TelegramLongPollingBot {
   private final CallbackDispatcher callbackDispatcher;
   private final CommandDispatcher commandDispatcher;
   private final MessageDispatcher messageDispatcher;
+  private final TelegramSender telegramSender;
 
   protected BaseTelegramBot(
       BotProperties botProperties,
       CallbackDispatcher callbackDispatcher,
       CommandDispatcher commandDispatcher,
-      MessageDispatcher messageDispatcher
-  ) {
+      MessageDispatcher messageDispatcher,
+      TelegramSender telegramSender) {
     this.botProperties = botProperties;
     this.callbackDispatcher = callbackDispatcher;
     this.commandDispatcher = commandDispatcher;
     this.messageDispatcher = messageDispatcher;
+    this.telegramSender = telegramSender;
   }
 
   @Override
@@ -61,9 +64,9 @@ public abstract class BaseTelegramBot extends TelegramLongPollingBot {
 
       // 4. Command
       if (update.hasMessage()) {
-        BotApiMethod<?> method = commandDispatcher.dispatch(update.getMessage());
-        if (method != null) {
-          executeSafely(method);
+        BotResponse response = commandDispatcher.dispatch(update.getMessage());
+        if (response != null) {
+          telegramSender.send(response);
           return;
         }
       }
