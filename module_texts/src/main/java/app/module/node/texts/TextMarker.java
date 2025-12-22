@@ -36,6 +36,7 @@ public class TextMarker {
   public static final String TODAY_LIMIT = "TODAY_LIMIT";
 
   public static final String BROADCAST_FAIL = "BROADCAST_FAIL";
+  public static final String BROADCAST_SUCCESS = "BROADCAST_SUCCESS";
   public static final String UNSUBSCRIBE = "UNSUBSCRIBE";
   public static final String ERROR = "ERROR";
 
@@ -45,5 +46,6 @@ public class TextMarker {
 
   public static final String DEBUG = "DEBUG";
   public static final String SCHEDULER_MESSAGE = "SCHEDULER_MESSAGE";
+  public static final String MENU_DEFAULT = "MENU_DEFAULT";
 }
 

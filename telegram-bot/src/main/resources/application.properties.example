@@ -1,0 +1,65 @@
+spring.config.import=optional:classpath:application-secret.properties
+# ===============================
+#  Telegram Bot Settings
+# ===============================
+bot.username=${BOT_USERNAME}
+bot.token=${BOT_TOKEN}
+bot.adminChatId=${BOT_ADMIN_CHAT_ID}
+
+# ===============================
+#  Database (PostgreSQL)
+# ===============================
+spring.datasource.url=${DB_URL}
+spring.datasource.username=${DB_USER}
+spring.datasource.password=${DB_PASS}
+spring.datasource.driver-class-name=
+
+# ===============================
+#  HikariCP Connection Pool
+# ===============================
+spring.datasource.hikari.maximum-pool-size=
+spring.datasource.hikari.minimum-idle=
+spring.datasource.hikari.idle-timeout=
+spring.datasource.hikari.connection-timeout=
+spring.datasource.hikari.pool-name=
+
+# ===============================
+#  JPA (Hibernate)
+# ===============================
+spring.jpa.hibernate.ddl-auto=
+spring.jpa.show-sql=
+spring.jpa.properties.hibernate.dialect=
+
+# ===============================
+#  MinIo
+# ===============================
+minio.url=http:
+minio.access-key=
+minio.secret-key=
+minio.bucket=
+
+# ===============================
+#  Mail
+# ===============================
+
+spring.mail.host=
+spring.mail.port=
+spring.mail.username=
+spring.mail.password=
+spring.mail.properties.mail.smtp.auth=
+spring.mail.properties.mail.smtp.starttls.enable=
+
+# ===============================
+#  Mail
+# ===============================
+
+
+bot.payments.base-currency=
+bot.payments.base-price=
+
+bot.payments.providers.paymaster.token=
+bot.payments.providers.paymaster.currencies=
+
+bot.payments.providers.ammer.token=
+bot.payments.providers.ammer.currencies=
+

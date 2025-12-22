@@ -23,7 +23,7 @@
         <module>module_media-note</module>
         <module>module_content</module>
         <module>module_payment</module>
-        <module>telegram-bot-REPLACE</module>
+        <module>telegram-bot</module>
     </modules>
 
     <properties>

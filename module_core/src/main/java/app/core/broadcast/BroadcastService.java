@@ -1,13 +1,11 @@
 package app.core.broadcast;
 
 import app.core.MessageSender;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 @Service
+@Slf4j
 public class BroadcastService {
   private final SubscriberService subscriberService;
   private final MessageSender sender;
@@ -18,6 +16,7 @@ public class BroadcastService {
   }
 
   public void broadcast(String text) {
+    log.debug("broadcast()");
     subscriberService.getActiveSubscribers()
         .forEach(chatId ->
             sender.sendText(chatId, text)
