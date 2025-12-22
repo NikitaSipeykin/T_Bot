@@ -1,5 +1,6 @@
 package app.bot.bot;
 
+import app.bot.bot.responce.BotResponseProcessor;
 import app.bot.bot.responce.TextResponse;
 import app.bot.config.BotProperties;
 import app.bot.dispatcher.CallbackDispatcher;
@@ -36,9 +37,8 @@ public class DemoBot extends BaseTelegramBot {
   public DemoBot(
       BotProperties botProperties, CallbackDispatcher callbackDispatcher, CommandDispatcher commandDispatcher,
       MessageDispatcher messageDispatcher, PaymentService paymentService, UserStateService userStateService,
-      TelegramSender telegramSender,
-      ProgramService programService, BotTextService text) {
-    super(botProperties, callbackDispatcher, commandDispatcher, messageDispatcher, telegramSender);
+      TelegramSender telegramSender, ProgramService programService, BotTextService text, BotResponseProcessor botResponseProcessor) {
+    super(botProperties, callbackDispatcher, commandDispatcher, messageDispatcher, botResponseProcessor, telegramSender);
     this.paymentService = paymentService;
     this.userStateService = userStateService;
     this.programService = programService;

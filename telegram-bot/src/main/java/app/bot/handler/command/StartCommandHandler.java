@@ -55,24 +55,5 @@ public class StartCommandHandler implements CommandHandler {
 
     return compositeResponse;
   }
-
-//  @Override
-//  public BotApiMethod<?> handle(Message message) {
-//    Long chatId = message.getChatId();
-//    String firstName = message.getFrom().getFirstName();
-//
-//    subscriberService.subscribe(
-//        chatId,
-//        message.getFrom().getUserName(),
-//        firstName
-//    );
-//
-//    userStateService.reset(chatId);
-//
-//    return SendMessage.builder()
-//        .chatId(chatId.toString())
-//        .text(textService.format("START", firstName != null ? firstName : "друг"))
-//        .build();
-//  }
 }
 

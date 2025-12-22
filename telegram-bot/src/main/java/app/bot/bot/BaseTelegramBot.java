@@ -1,21 +1,18 @@
 package app.bot.bot;
 
 import app.bot.bot.responce.BotResponse;
+import app.bot.bot.responce.BotResponseProcessor;
 import app.bot.config.BotProperties;
 import app.bot.dispatcher.CallbackDispatcher;
 import app.bot.dispatcher.CommandDispatcher;
 import app.bot.dispatcher.MessageDispatcher;
 import app.bot.sender.TelegramSender;
-import app.core.program.DailyUpdateResult;
-import app.module.program.ProgramService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
-
-import java.util.List;
 
 @Slf4j
 @Component
@@ -25,6 +22,8 @@ public abstract class BaseTelegramBot extends TelegramLongPollingBot {
   private final CallbackDispatcher callbackDispatcher;
   private final CommandDispatcher commandDispatcher;
   private final MessageDispatcher messageDispatcher;
+  protected final BotResponseProcessor botResponseProcessor;
+
   protected final TelegramSender telegramSender;
 
   protected BaseTelegramBot(
@@ -32,11 +31,12 @@ public abstract class BaseTelegramBot extends TelegramLongPollingBot {
       CallbackDispatcher callbackDispatcher,
       CommandDispatcher commandDispatcher,
       MessageDispatcher messageDispatcher,
-      TelegramSender telegramSender) {
+      BotResponseProcessor botResponseProcessor, TelegramSender telegramSender) {
     this.botProperties = botProperties;
     this.callbackDispatcher = callbackDispatcher;
     this.commandDispatcher = commandDispatcher;
     this.messageDispatcher = messageDispatcher;
+    this.botResponseProcessor = botResponseProcessor;
     this.telegramSender = telegramSender;
   }
 
@@ -61,8 +61,8 @@ public abstract class BaseTelegramBot extends TelegramLongPollingBot {
 
       // 3. Callback
       if (update.hasCallbackQuery()) {
-        BotApiMethod<?> method = callbackDispatcher.dispatch(update.getCallbackQuery());
-        executeSafely(method);
+        BotResponse response = callbackDispatcher.dispatch(update.getCallbackQuery());
+        botResponseProcessor.process(response);
         return;
       }
 
@@ -70,7 +70,7 @@ public abstract class BaseTelegramBot extends TelegramLongPollingBot {
       if (update.hasMessage()) {
         BotResponse response = commandDispatcher.dispatch(update.getMessage());
         if (response != null) {
-          telegramSender.send(response);
+          botResponseProcessor.process(response);
           return;
         }
       }

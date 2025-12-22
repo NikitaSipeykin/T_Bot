@@ -1,5 +1,6 @@
 package app.bot.dispatcher;
 
+import app.bot.bot.responce.BotResponse;
 import app.bot.handler.callback.CallbackHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -18,8 +19,10 @@ public class CallbackDispatcher {
     this.handlers = handlers;
   }
 
-  public BotApiMethod<?> dispatch(CallbackQuery query) {
+  public BotResponse dispatch(CallbackQuery query) {
     String data = query.getData();
+
+    log.info("data = " + data);
 
     CallbackHandler handler = handlers.stream()
         .filter(h -> h.supports(data))

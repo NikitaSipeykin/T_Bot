@@ -1,5 +1,7 @@
 package app.bot.handler.callback;
 
+import app.bot.bot.responce.BotResponse;
+import app.bot.bot.responce.TextResponse;
 import app.bot.state.UserStateService;
 import app.core.test.FinalMessage;
 import app.core.test.OutgoingMessage;
@@ -30,36 +32,37 @@ public class TestCallbackHandler implements CallbackHandler {
   }
 
   @Override
-  public BotApiMethod<?> handle(CallbackQuery query) {
+  public BotResponse handle(CallbackQuery query) {
     Long chatId = query.getMessage().getChatId();
     String data = query.getData();
 
     Object response = testService.processAnswer(chatId, data);
 
-    if (response instanceof OutgoingMessage m) {
-      return SendMessage.builder()
-          .chatId(chatId.toString())
-          .text(m.text())
-          .replyMarkup(KeyboardFactory.from(
-              m.options().stream()
-                  .map(o -> new KeyboardOption(o.getText(), o.getCallback()))
-                  .toList()
-          ))
-          .build();
-    }
+//    if (response instanceof OutgoingMessage m) {
+//      return TextResponse
+//          .chatId(chatId.toString())
+//          .text(m.text())
+//          .replyMarkup(KeyboardFactory.from(
+//              m.options().stream()
+//                  .map(o -> new KeyboardOption(o.getText(), o.getCallback()))
+//                  .toList()
+//          ))
+//          .build();
+//    }
+//
+//    if (response instanceof FinalMessage f) {
+//      userStateService.setState(chatId, UserState.RESULT);
+//
+//      return SendMessage.builder()
+//          .chatId(chatId.toString())
+//          .text(f.text())
+//          .build();
+//    }
+    return null;
 
-    if (response instanceof FinalMessage f) {
-      userStateService.setState(chatId, UserState.RESULT);
-
-      return SendMessage.builder()
-          .chatId(chatId.toString())
-          .text(f.text())
-          .build();
-    }
-
-    throw new IllegalStateException(
-        "Unsupported response type: " + response.getClass()
-    );
+//    throw new IllegalStateException(
+//        "Unsupported response type: " + response.getClass()
+//    );
   }
 }
 

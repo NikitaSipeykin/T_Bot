@@ -1,5 +1,6 @@
 package app.bot.handler.callback;
 
+import app.bot.bot.responce.BotResponse;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
@@ -14,11 +15,8 @@ public class ConfirmEmailCallbackHandler implements CallbackHandler {
   }
 
   @Override
-  public BotApiMethod<?> handle(CallbackQuery callbackQuery) {
-    return EditMessageText.builder()
-        .chatId(callbackQuery.getMessage().getChatId())
-        .messageId(callbackQuery.getMessage().getMessageId())
-        .text("✅ Email подтверждён")
-        .build();
+  public BotResponse handle(CallbackQuery callbackQuery) {
+
+    return null;
   }
 }

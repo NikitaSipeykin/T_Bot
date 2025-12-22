@@ -1,5 +1,6 @@
 package app.bot.handler.message;
 
+import app.bot.bot.responce.BotResponse;
 import app.bot.handler.callback.CallbackHandler;
 import app.bot.state.UserState;
 import app.bot.state.UserStateService;
@@ -27,18 +28,18 @@ public class ProgramStartCallbackHandler implements CallbackHandler {
   }
 
   @Override
-  public BotApiMethod<?> handle(CallbackQuery query) {
+  public BotResponse handle(CallbackQuery query) {
     Long chatId = query.getMessage().getChatId();
 
     Object response = programService.startProgram(chatId);
     userStateService.setState(chatId, UserState.PROGRAM);
 
-    if (response instanceof ProgramMessage m) {
-      return SendMessage.builder()
-          .chatId(chatId.toString())
-          .text(textService.format(m.text()))
-          .build();
-    }
+//    if (response instanceof ProgramMessage m) {
+//      return SendMessage.builder()
+//          .chatId(chatId.toString())
+//          .text(textService.format(m.text()))
+//          .build();
+//    }
 
     return null;
   }
