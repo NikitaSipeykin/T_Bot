@@ -1,15 +1,13 @@
 package app.bot.sender;
 
-import app.bot.bot.responce.BotResponse;
-import app.bot.bot.responce.CompositeResponse;
-import app.bot.bot.responce.MediaResponse;
-import app.bot.bot.responce.TextResponse;
+import app.bot.bot.responce.*;
 import app.module.node.NoteService;
 import app.module.node.web.MediaService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
+import org.telegram.telegrambots.meta.api.methods.invoices.SendInvoice;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
@@ -40,6 +38,19 @@ public class TelegramSender {
 
     } else if (response instanceof CompositeResponse r) {
       r.responses().forEach(this::send);
+
+    } else if (response instanceof SendInvoiceResponse r){
+      sendInvoice(r);
+    }
+  }
+
+  private void sendInvoice(SendInvoiceResponse invoiceResponse){
+    SendInvoice invoice = invoiceResponse.response();
+
+    try {
+      botProvider.getObject().execute(invoice);
+    } catch (TelegramApiException e) {
+      throw new RuntimeException(e);
     }
   }
 

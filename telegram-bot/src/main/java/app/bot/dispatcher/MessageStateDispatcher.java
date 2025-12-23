@@ -1,12 +1,14 @@
 package app.bot.dispatcher;
 
 import app.bot.handler.message.MessageHandler;
+import app.bot.handler.state_message.StateMessageHandler;
 import app.bot.state.UserState;
 import app.bot.state.UserStateService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.objects.Message;
+import org.telegram.telegrambots.meta.api.objects.Update;
 
 import java.util.Map;
 import java.util.List;
@@ -15,29 +17,28 @@ import java.util.stream.Collectors;
 @Component
 @Slf4j
 public class MessageStateDispatcher {
-
-    private final Map<UserState, MessageHandler> handlers;
-    private final UserStateService userStateService;
+    private final UserStateService stateService;
+    private final Map<UserState, StateMessageHandler> handlers;
 
     public MessageStateDispatcher(
-        List<MessageHandler> handlers,
-        UserStateService userStateService
+        UserStateService stateService,
+        List<StateMessageHandler> handlers
     ) {
+        this.stateService = stateService;
         this.handlers = handlers.stream()
-            .collect(Collectors.toMap(MessageHandler::supports, h -> h));
-        this.userStateService = userStateService;
+            .collect(Collectors.toMap(StateMessageHandler::state, h -> h));
     }
 
-    public BotApiMethod<?> dispatch(Message message) {
-        Long chatId = message.getChatId();
-        UserState state = userStateService.getState(chatId);
+    public void dispatch(Update update) {
+        Long chatId = update.getMessage().getChatId();
+        UserState state = stateService.getState(chatId);
 
-        MessageHandler handler = handlers.get(state);
+        StateMessageHandler handler = handlers.get(state);
+
         if (handler == null) {
-            log.warn("No MessageHandler for state={}", state);
-            return null;
+            throw new IllegalStateException("No handler for state " + state);
         }
 
-        return handler.handle(message);
+        handler.handle(update);
     }
 }

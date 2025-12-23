@@ -1,6 +1,6 @@
 package app.bot.bot.responce;
 
 public sealed interface BotResponse
-    permits CompositeResponse, MediaResponse, SendWithDelayedResponse, TextResponse {
+    permits CompositeResponse, MediaResponse, SendInvoiceResponse, SendWithDelayedResponse, TextResponse {
 }
 

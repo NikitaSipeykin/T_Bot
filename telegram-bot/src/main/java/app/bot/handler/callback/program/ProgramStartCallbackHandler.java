@@ -1,4 +1,4 @@
-package app.bot.handler.message;
+package app.bot.handler.callback.program;
 
 import app.bot.bot.responce.BotResponse;
 import app.bot.handler.callback.CallbackHandler;

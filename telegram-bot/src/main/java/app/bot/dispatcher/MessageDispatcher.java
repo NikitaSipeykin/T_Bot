@@ -1,40 +1,54 @@
 package app.bot.dispatcher;
 
+import app.bot.bot.responce.BotResponse;
+import app.bot.handler.message.MessageHandler;
+import app.bot.handler.message.SuccessPaymentMessageHandler;
 import app.bot.handler.state_message.StateMessageHandler;
 import app.bot.state.UserState;
 import app.bot.state.UserStateService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
+import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Component
 public class MessageDispatcher {
 
-  private final UserStateService stateService;
-  private final Map<UserState, StateMessageHandler> handlers;
+  private final Map<UserState, MessageHandler> handlers;
+  private final UserStateService userStateService;
 
   public MessageDispatcher(
-      UserStateService stateService,
-      List<StateMessageHandler> handlers
+      List<MessageHandler> handlers,
+      UserStateService userStateService
   ) {
-    this.stateService = stateService;
-    this.handlers = handlers.stream()
-        .collect(Collectors.toMap(StateMessageHandler::state, h -> h));
+    this.handlers = handlers.stream().collect(Collectors.toMap(MessageHandler::supports, h -> h));
+    this.userStateService = userStateService;
   }
 
-  public void dispatch(Update update) {
-    Long chatId = update.getMessage().getChatId();
-    UserState state = stateService.getState(chatId);
+  public BotResponse dispatch(Message message) {
+    Long chatId = message.getChatId();
+    UserState state = userStateService.getState(chatId);
+    String text = message.getText();
 
-    StateMessageHandler handler = handlers.get(state);
+    log.info("Message text = " + text);
 
-    if (handler == null) {
-      throw new IllegalStateException("No handler for state " + state);
+    if (text.equals("successPayment")){
+      MessageHandler successHandler = handlers.get(UserState.PAYMENT);
+      return successHandler.handle(message);
     }
 
-    handler.handle(update);
+    MessageHandler handler = handlers.get(state);
+    if (handler == null) {
+      log.warn("No MessageHandler for state={}", state);
+      return null;
+    }
+
+    return handler.handle(message);
   }
 }

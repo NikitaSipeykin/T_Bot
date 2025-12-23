@@ -11,6 +11,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageReplyMarkup;
+import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
+import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
@@ -26,11 +29,8 @@ public abstract class BaseTelegramBot extends TelegramLongPollingBot {
 
   protected final TelegramSender telegramSender;
 
-  protected BaseTelegramBot(
-      BotProperties botProperties,
-      CallbackDispatcher callbackDispatcher,
-      CommandDispatcher commandDispatcher,
-      MessageDispatcher messageDispatcher,
+  protected BaseTelegramBot(BotProperties botProperties, CallbackDispatcher callbackDispatcher,
+      CommandDispatcher commandDispatcher, MessageDispatcher messageDispatcher,
       BotResponseProcessor botResponseProcessor, TelegramSender telegramSender) {
     this.botProperties = botProperties;
     this.callbackDispatcher = callbackDispatcher;
@@ -56,12 +56,18 @@ public abstract class BaseTelegramBot extends TelegramLongPollingBot {
       // 2. Successful payment
       if (update.hasMessage() && update.getMessage().hasSuccessfulPayment()) {
         handleSuccessfulPayment(update);
+        Message message = update.getMessage();
+        message.setText("successPayment");
+        BotResponse response = messageDispatcher.dispatch(message);
+        botResponseProcessor.process(response);
         return;
       }
 
       // 3. Callback
       if (update.hasCallbackQuery()) {
-        BotResponse response = callbackDispatcher.dispatch(update.getCallbackQuery());
+        CallbackQuery cb = update.getCallbackQuery();
+        removeInlineButtons(cb);
+        BotResponse response = callbackDispatcher.dispatch(cb);
         botResponseProcessor.process(response);
         return;
       }
@@ -77,7 +83,7 @@ public abstract class BaseTelegramBot extends TelegramLongPollingBot {
 
       // 5. State-based message
       if (update.hasMessage()) {
-        messageDispatcher.dispatch(update);
+        messageDispatcher.dispatch(update.getMessage());
         return;
       }
 
@@ -96,6 +102,19 @@ public abstract class BaseTelegramBot extends TelegramLongPollingBot {
       execute(method);
     } catch (TelegramApiException e) {
       log.error("Telegram API execution failed", e);
+    }
+  }
+
+  private void removeInlineButtons(CallbackQuery cb) {
+    EditMessageReplyMarkup edit = new EditMessageReplyMarkup();
+    edit.setChatId(cb.getMessage().getChatId());
+    edit.setMessageId(cb.getMessage().getMessageId());
+    edit.setReplyMarkup(null);
+
+    try {
+      execute(edit);
+    } catch (TelegramApiException e) {
+      e.printStackTrace();
     }
   }
 

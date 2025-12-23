@@ -22,7 +22,7 @@ public class CallbackDispatcher {
   public BotResponse dispatch(CallbackQuery query) {
     String data = query.getData();
 
-    log.info("data = " + data);
+    log.info("Callback data = " + data);
 
     CallbackHandler handler = handlers.stream()
         .filter(h -> h.supports(data))

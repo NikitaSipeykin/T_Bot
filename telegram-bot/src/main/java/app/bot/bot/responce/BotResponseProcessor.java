@@ -40,6 +40,11 @@ public class BotResponseProcessor {
       return;
     }
 
+    if (response instanceof SendInvoiceResponse invoice){
+      sender.send(invoice);
+      return;
+    }
+
     throw new IllegalArgumentException(
         "Unsupported BotResponse type: " + response.getClass()
     );

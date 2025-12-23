@@ -1,5 +1,6 @@
 package app.bot.handler.message;
 
+import app.bot.bot.responce.BotResponse;
 import app.bot.email.EmailService;
 import app.bot.state.UserState;
 import app.bot.state.UserStateService;
@@ -24,27 +25,29 @@ public class MailRequestMessageHandler implements MessageHandler {
   }
 
   @Override
-  public BotApiMethod<?> handle(Message message) {
+  public BotResponse handle(Message message) {
     Long chatId = message.getChatId();
     String email = message.getText();
 
-    if (!emailService.isValidEmail(email)) {
-      return SendMessage.builder()
-          .chatId(chatId.toString())
-          .text("Кажется, это не почта. Попробуй снова:")
-          .build();
-    }
-
-    String code = emailService.generateCode();
-    subscriberService.setEmail(chatId, email);
-    subscriberService.setCode(chatId, code);
-
-    emailService.sendVerificationCode(email, code);
-    userStateService.setState(chatId, UserState.WAIT_EMAIL);
-
-    return SendMessage.builder()
-        .chatId(chatId.toString())
-        .text("Я отправил код на почту. Введите его:")
-        .build();
+//    if (!emailService.isValidEmail(email)) {
+//      return SendMessage.builder()
+//          .chatId(chatId.toString())
+//          .text("Кажется, это не почта. Попробуй снова:")
+//          .build();
+//    }
+//
+//    String code = emailService.generateCode();
+//    subscriberService.setEmail(chatId, email);
+//    subscriberService.setCode(chatId, code);
+//
+//    emailService.sendVerificationCode(email, code);
+//    userStateService.setState(chatId, UserState.WAIT_EMAIL);
+//
+//    return SendMessage.builder()
+//        .chatId(chatId.toString())
+//        .text("Я отправил код на почту. Введите его:")
+//        .build();
+    //Todo: dummy
+    return null;
   }
 }

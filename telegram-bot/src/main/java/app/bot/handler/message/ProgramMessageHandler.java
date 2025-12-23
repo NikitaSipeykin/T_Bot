@@ -1,5 +1,6 @@
 package app.bot.handler.message;
 
+import app.bot.bot.responce.BotResponse;
 import app.bot.keyboard.KeyboardFactory;
 import app.bot.keyboard.KeyboardOption;
 import app.bot.state.UserState;
@@ -30,47 +31,48 @@ public class ProgramMessageHandler implements MessageHandler {
   }
 
   @Override
-  public BotApiMethod<?> handle(Message message) {
+  public BotResponse handle(Message message) {
     Long chatId = message.getChatId();
 
-    if (!programService.checkUserAccessProgram(chatId)) {
-      userStateService.setState(chatId, UserState.NEED_PAYMENT);
-
-      return SendMessage.builder()
-          .chatId(chatId.toString())
-          .text(textService.format(TextMarker.NEED_PAYMENT))
-          .replyMarkup(KeyboardFactory.from(List.of(
-              new KeyboardOption("Да, записаться!", TextMarker.PAYMENT),
-              new KeyboardOption("Расскажи подробнее", TextMarker.INFO_PROGRAM)
-          )))
-          .build();
-    }
-
-    Object response = programService.nextMessage(chatId);
-
-    if (response instanceof ProgramMessage m) {
-
-      userStateService.setState(chatId, UserState.PROGRAM);
-
-      if (m.options().isEmpty()) {
-        return SendMessage.builder()
-            .chatId(chatId.toString())
-            .text(textService.format(m.text()))
-            .build();
-      }
-
-      return SendMessage.builder()
-          .chatId(chatId.toString())
-          .text(textService.format(m.text()))
-          .replyMarkup(
-              KeyboardFactory.from(
-                  m.options().stream()
-                      .map(o -> new KeyboardOption(o.getText(), o.getCallback()))
-                      .toList()
-              )
-          )
-          .build();
-    }
+    //Todo: dummy
+//    if (!programService.checkUserAccessProgram(chatId)) {
+//      userStateService.setState(chatId, UserState.NEED_PAYMENT);
+//
+//      return SendMessage.builder()
+//          .chatId(chatId.toString())
+//          .text(textService.format(TextMarker.NEED_PAYMENT))
+//          .replyMarkup(KeyboardFactory.from(List.of(
+//              new KeyboardOption("Да, записаться!", TextMarker.PAYMENT),
+//              new KeyboardOption("Расскажи подробнее", TextMarker.INFO_PROGRAM)
+//          )))
+//          .build();
+//    }
+//
+//    Object response = programService.nextMessage(chatId);
+//
+//    if (response instanceof ProgramMessage m) {
+//
+//      userStateService.setState(chatId, UserState.PROGRAM);
+//
+//      if (m.options().isEmpty()) {
+//        return SendMessage.builder()
+//            .chatId(chatId.toString())
+//            .text(textService.format(m.text()))
+//            .build();
+//      }
+//
+//      return SendMessage.builder()
+//          .chatId(chatId.toString())
+//          .text(textService.format(m.text()))
+//          .replyMarkup(
+//              KeyboardFactory.from(
+//                  m.options().stream()
+//                      .map(o -> new KeyboardOption(o.getText(), o.getCallback()))
+//                      .toList()
+//              )
+//          )
+//          .build();
+//    }
 
     return null;
   }
