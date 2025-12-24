@@ -43,8 +43,11 @@ public class TestCallbackHandler implements CallbackHandler {
   public BotResponse handle(CallbackQuery query) {
     Long chatId = query.getMessage().getChatId();
     String data = query.getData();
-    CompositeResponse compositeResponse = new CompositeResponse(new ArrayList<>());
+    userStateService.setState(chatId, UserState.DEFAULT);
+
     Object response = testService.processAnswer(chatId, data);
+
+    CompositeResponse compositeResponse = new CompositeResponse(new ArrayList<>());
 
     if (response instanceof OutgoingMessage m) {
       if (m.isNextTopic()) {
@@ -57,7 +60,7 @@ public class TestCallbackHandler implements CallbackHandler {
 
       if (Objects.equals(f.text(), textService.format(TextMarker.ALL_ZERO))) {
         compositeResponse.responses().add(new TextResponse(chatId, textService.get(TextMarker.ALL_ZERO_RESULT),
-            KeyboardFactory.from(List.of(new KeyboardOption("Хорошо!", TextMarker.PAYMENT),
+            KeyboardFactory.from(List.of(new KeyboardOption("Хорошо!", TextMarker.VIBRATIONS_AND_CHAKRAS),
                 new KeyboardOption("Попробовать еще раз!", TextMarker.CHAKRA_INTRO)))));
 
         return compositeResponse;

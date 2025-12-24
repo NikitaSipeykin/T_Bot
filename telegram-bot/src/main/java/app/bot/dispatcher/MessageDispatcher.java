@@ -2,15 +2,11 @@ package app.bot.dispatcher;
 
 import app.bot.bot.responce.BotResponse;
 import app.bot.handler.message.MessageHandler;
-import app.bot.handler.message.SuccessPaymentMessageHandler;
-import app.bot.handler.state_message.StateMessageHandler;
 import app.bot.state.UserState;
 import app.bot.state.UserStateService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.objects.Message;
-import org.telegram.telegrambots.meta.api.objects.Update;
 
 import java.util.List;
 import java.util.Map;
@@ -39,10 +35,11 @@ public class MessageDispatcher {
     log.info("Message text = " + text);
 
     if (text.equals("successPayment")){
-      MessageHandler successHandler = handlers.get(UserState.PAYMENT);
+      MessageHandler successHandler = handlers.get(UserState.SUCCESS_PAYMENT);
       return successHandler.handle(message);
     }
 
+    log.info("state = " + state);
     MessageHandler handler = handlers.get(state);
     if (handler == null) {
       log.warn("No MessageHandler for state={}", state);

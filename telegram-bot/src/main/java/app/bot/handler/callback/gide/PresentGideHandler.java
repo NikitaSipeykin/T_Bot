@@ -6,6 +6,8 @@ import app.bot.bot.responce.*;
 import app.bot.handler.callback.CallbackHandler;
 import app.bot.keyboard.KeyboardFactory;
 import app.bot.keyboard.KeyboardOption;
+import app.bot.state.UserState;
+import app.bot.state.UserStateService;
 import app.module.node.texts.BotTextService;
 import app.module.node.texts.TextMarker;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +23,7 @@ import java.util.List;
 public class PresentGideHandler implements CallbackHandler {
 
   private final BotTextService textService;
+  private final UserStateService userStateService;
 
   @Override
   public boolean supports(String callbackData) {
@@ -30,6 +33,8 @@ public class PresentGideHandler implements CallbackHandler {
   @Override
   public BotResponse handle(CallbackQuery callbackQuery) {
     Long chatId = callbackQuery.getMessage().getChatId();
+    userStateService.setState(chatId, UserState.DEFAULT);
+
     CompositeResponse response = new CompositeResponse(new ArrayList<>());
     CompositeResponse delayedResponse = new CompositeResponse(new ArrayList<>());
 

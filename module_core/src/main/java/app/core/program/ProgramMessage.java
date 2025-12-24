@@ -8,4 +8,4 @@ public record ProgramMessage(
     String text,
     List<AnswerOption> options,
     boolean shouldBeNext
-){}
+) implements ProgramResponse {}

@@ -31,6 +31,7 @@ public class CallbackDispatcher {
             "No CallbackHandler found for callbackData: " + data
         ));
 
+    log.info("handler = " + handler);
     log.debug("Callback [{}] handled by {}", data, handler.getClass().getSimpleName());
 
     return handler.handle(query);

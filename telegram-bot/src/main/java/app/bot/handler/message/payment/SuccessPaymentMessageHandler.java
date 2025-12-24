@@ -1,7 +1,8 @@
-package app.bot.handler.message;
+package app.bot.handler.message.payment;
 
 import app.bot.bot.responce.BotResponse;
 import app.bot.bot.responce.TextResponse;
+import app.bot.handler.message.MessageHandler;
 import app.bot.keyboard.KeyboardFactory;
 import app.bot.keyboard.KeyboardOption;
 import app.bot.state.UserState;
@@ -21,7 +22,7 @@ public class SuccessPaymentMessageHandler implements MessageHandler {
 
   @Override
   public UserState supports() {
-    return UserState.PAYMENT;
+    return UserState.SUCCESS_PAYMENT;
   }
 
   @Override

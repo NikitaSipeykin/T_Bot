@@ -6,6 +6,7 @@ import app.bot.bot.responce.TextResponse;
 import app.bot.handler.callback.CallbackHandler;
 import app.bot.keyboard.KeyboardFactory;
 import app.bot.keyboard.KeyboardOption;
+import app.bot.state.UserState;
 import app.bot.state.UserStateService;
 import app.core.broadcast.SubscriberService;
 import app.core.test.OutgoingMessage;
@@ -37,6 +38,8 @@ public class EndTestCallbackHandler implements CallbackHandler {
   @Override
   public BotResponse handle(CallbackQuery query) {
     Long chatId = query.getMessage().getChatId();
+    userStateService.setState(chatId, UserState.DEFAULT);
+    
     List<String> topics = testService.getResultTopics(chatId);
     CompositeResponse compositeResponse = new CompositeResponse(new ArrayList<>());
 

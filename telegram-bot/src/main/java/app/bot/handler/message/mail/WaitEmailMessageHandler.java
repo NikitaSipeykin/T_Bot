@@ -1,7 +1,8 @@
-package app.bot.handler.message;
+package app.bot.handler.message.mail;
 
 import app.bot.bot.responce.BotResponse;
 import app.bot.email.EmailService;
+import app.bot.handler.message.MessageHandler;
 import app.bot.state.UserState;
 import app.bot.state.UserStateService;
 import app.core.broadcast.SubscriberService;
@@ -13,7 +14,7 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 
 @Component
 @RequiredArgsConstructor
-public class MailRequestMessageHandler implements MessageHandler {
+public class WaitEmailMessageHandler implements MessageHandler {
 
   private final EmailService emailService;
   private final SubscriberService subscriberService;
@@ -21,32 +22,31 @@ public class MailRequestMessageHandler implements MessageHandler {
 
   @Override
   public UserState supports() {
-    return UserState.MAIL_REQUEST;
+    return UserState.WAIT_EMAIL;
   }
 
   @Override
   public BotResponse handle(Message message) {
     Long chatId = message.getChatId();
-    String email = message.getText();
+    String input = message.getText();
 
-//    if (!emailService.isValidEmail(email)) {
+    String code = subscriberService.getCode(chatId);
+
+//    if (!input.equals(code)) {
 //      return SendMessage.builder()
 //          .chatId(chatId.toString())
-//          .text("Кажется, это не почта. Попробуй снова:")
+//          .text("Неверный код! Попробуй снова.")
 //          .build();
 //    }
 //
-//    String code = emailService.generateCode();
-//    subscriberService.setEmail(chatId, email);
-//    subscriberService.setCode(chatId, code);
-//
-//    emailService.sendVerificationCode(email, code);
-//    userStateService.setState(chatId, UserState.WAIT_EMAIL);
+//    subscriberService.setVerified(chatId);
+//    userStateService.setState(chatId, UserState.RESULT);
 //
 //    return SendMessage.builder()
 //        .chatId(chatId.toString())
-//        .text("Я отправил код на почту. Введите его:")
+//        .text("Отлично! Вот твой подарок 🎁")
 //        .build();
+
     //Todo: dummy
     return null;
   }

@@ -1,12 +1,16 @@
 package app.bot.handler.callback.payment;
 
 import app.bot.bot.responce.BotResponse;
+import app.bot.bot.responce.CompositeResponse;
 import app.bot.bot.responce.SendInvoiceResponse;
 import app.bot.bot.responce.TextResponse;
 import app.bot.handler.callback.CallbackHandler;
+import app.bot.keyboard.KeyboardFactory;
+import app.bot.keyboard.KeyboardOption;
+import app.bot.state.UserState;
 import app.bot.state.UserStateService;
 import app.module.converter.ExchangeRateServiceImpl;
-import app.module.node.texts.BotTextService;
+import app.module.node.texts.TextMarker;
 import app.module.payment.PaymentService;
 import app.module.payment.props.PaymentOption;
 import app.module.payment.props.PaymentProperties;
@@ -16,6 +20,7 @@ import org.telegram.telegrambots.meta.api.methods.invoices.SendInvoice;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.payments.LabeledPrice;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -39,6 +44,7 @@ public class SendInvoicePaymentCallbackHandler implements CallbackHandler {
   public BotResponse handle(CallbackQuery query) {
     String currency = query.getData();
     Long chatId = query.getMessage().getChatId();
+    userStateService.setState(chatId, UserState.PAYMENT);
 
     try {
       PaymentOption option = paymentProperties.resolve(currency);
@@ -54,6 +60,8 @@ public class SendInvoicePaymentCallbackHandler implements CallbackHandler {
 
       paymentService.createPayment(chatId, payload, amount, currency);
 
+      CompositeResponse compositeResponse = new CompositeResponse(new ArrayList<>());;
+
       SendInvoice invoice = SendInvoice.builder()
           .chatId(chatId.toString())
           .title("Доступ к программе")
@@ -67,7 +75,15 @@ public class SendInvoicePaymentCallbackHandler implements CallbackHandler {
           .startParameter("start")
           .build();
 
-      return new SendInvoiceResponse(invoice);
+      SendInvoiceResponse invoiceResponse = new SendInvoiceResponse(invoice);
+
+      TextResponse response = new TextResponse(chatId, "Выбрать другую валюту!",
+          KeyboardFactory.from(List.of(new KeyboardOption("Назад", TextMarker.PAYMENT))));
+
+      compositeResponse.responses().add(invoiceResponse);
+      compositeResponse.responses().add(response);
+
+      return compositeResponse;
     } catch (IllegalStateException e) {
       return new TextResponse(chatId, "Оплата в данной валюте временно недоступна", null);
     }

@@ -1,38 +1,34 @@
-package app.bot.handler.callback.payment;
+package app.bot.handler.message.payment;
 
 import app.bot.bot.responce.BotResponse;
 import app.bot.bot.responce.TextResponse;
-import app.bot.handler.callback.CallbackHandler;
+import app.bot.handler.message.MessageHandler;
 import app.bot.keyboard.KeyboardFactory;
 import app.bot.keyboard.KeyboardOption;
 import app.bot.state.UserState;
-import app.bot.state.UserStateService;
 import app.module.node.texts.BotTextService;
 import app.module.node.texts.TextMarker;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
+import org.telegram.telegrambots.meta.api.objects.Message;
 
 import java.util.List;
 
 @Component
 @RequiredArgsConstructor
-public class IntroPaymentCallbackHandler implements CallbackHandler {
+public class NeedPaymentMessageHandler implements MessageHandler {
 
   private final BotTextService textService;
-  private final UserStateService userStateService;
 
   @Override
-  public boolean supports(String callbackData) {
-    return callbackData.equals(TextMarker.VIBRATIONS_AND_CHAKRAS);
+  public UserState supports() {
+    return UserState.NEED_PAYMENT;
   }
 
   @Override
-  public BotResponse handle(CallbackQuery query) {
-    Long chatId = query.getMessage().getChatId();
-    userStateService.setState(chatId, UserState.NEED_PAYMENT);
-
-    return new TextResponse(chatId, textService.get(TextMarker.VIBRATIONS_AND_CHAKRAS),
+  public BotResponse handle(Message message) {
+    Long chatId = message.getChatId();
+    return new TextResponse(chatId, textService.get(TextMarker.NEED_PAYMENT),
         KeyboardFactory.from(List.of(
             new KeyboardOption("Да, записаться!", TextMarker.PAYMENT),
             new KeyboardOption("Расскажи подробнее", TextMarker.INFO_PROGRAM))));
