@@ -67,8 +67,6 @@ public class ProgramService implements AccessService {
       }
       //without buttons
       else if (currentBlock.endsWith(TextMarker.QUESTIONS_MARKER)) {
-        progressService.moveToNextBlock(chatId);
-
         CompositeProgramMessage compositeProgramMessage = new CompositeProgramMessage(new ArrayList<>());
         ProgramMessage messageOne = new ProgramMessage(currentBlock, options, true);
         ProgramMessage messageTwo = new ProgramMessage(progressService.getCurrentBlock(chatId), options, true);
@@ -90,6 +88,10 @@ public class ProgramService implements AccessService {
 
   public List<DailyUpdateResult> dailyUpdate() {
     return progressService.dailyUpdate();
+  }
+
+  public void moveToTopic(Long chatId, String topicName){
+    progressService.setProgress(chatId, topicName);
   }
 
   public boolean checkUserAccessProgram(Long chatId) {

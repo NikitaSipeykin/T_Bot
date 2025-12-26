@@ -37,6 +37,7 @@ public class ProgramCallbackHandler implements CallbackHandler {
   @Override
   public BotResponse handle(CallbackQuery query) {
     Long chatId = query.getMessage().getChatId();
+    log.info("PCH handle() = ");
 
     if (programService.checkUserAccessProgram(chatId)) {
       userStateService.setState(chatId, UserState.COURSE);
@@ -66,7 +67,8 @@ public class ProgramCallbackHandler implements CallbackHandler {
         log.info("compositeResponse = " + compositeResponse);
         return compositeResponse;
       }
-    }else {
+    }
+    else {
       Object response = programService.startProgram(chatId);
       userStateService.setState(chatId, UserState.COURSE);
 

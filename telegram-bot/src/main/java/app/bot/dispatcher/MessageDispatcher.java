@@ -41,6 +41,7 @@ public class MessageDispatcher {
 
     log.info("state = " + state);
     MessageHandler handler = handlers.get(state);
+    log.info("handler = " + handler);
     if (handler == null) {
       log.warn("No MessageHandler for state={}", state);
       return null;

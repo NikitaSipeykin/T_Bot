@@ -75,7 +75,7 @@ public class ProgramProgressServiceImpl implements ProgramProgressService {
 
   @Override
   public boolean isUserInProgram(Long chatId) {
-    return progressRepo.existsById(chatId);
+    return progressRepo.existsByChatId(chatId);
   }
 
   @Override
@@ -118,11 +118,23 @@ public class ProgramProgressServiceImpl implements ProgramProgressService {
 
   @Override
   public boolean canUserAccessBlock(Long chatId, String blockName) {
-    String todayLimit = getTodayLimit(chatId);
+    String todayLimitName = getTodayLimit(chatId);
+    Optional<ProgramBlocks> limitBlock = blocksRepo.findByName(todayLimitName);
+    Optional<ProgramBlocks> currentBlock = blocksRepo.findByName(blockName);
 
-    log.info("\nblockName = " + blockName + ";\n" +
-             "todayLimit = " + todayLimit + ";\n" );
-    return todayLimit != null && isBlockBeforeOrEqual(blockName, todayLimit);
+    log.info("canUserAccessBlock() \n" +
+             "chatId = " + chatId + "\n" +
+             "blockName = " + blockName + "\n" +
+             "todayLimitName = " + todayLimitName);
+
+    log.info("\nlimitBlock = " + limitBlock + ";\n" +
+             "currentBlock = " + currentBlock);
+
+    return limitBlock.get().getId() >= currentBlock.get().getId();
+
+//    log.info("\nblockName = " + blockName + ";\n" +
+//             "todayLimit = " + todayLimitName + ";\n" );
+//    return todayLimit != null && isBlockBeforeOrEqual(blockName, todayLimit);
   }
 
   // ============================================================

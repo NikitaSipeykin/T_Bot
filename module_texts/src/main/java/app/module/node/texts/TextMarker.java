@@ -46,6 +46,22 @@ public class TextMarker {
 
   public static final String DEBUG = "DEBUG";
   public static final String SCHEDULER_MESSAGE = "SCHEDULER_MESSAGE";
+
   public static final String MENU_DEFAULT = "MENU_DEFAULT";
+  public static final String MENU_IN_PROGRAM = "MENU_IN_PROGRAM";
+
+  public static final String MENU_LIMIT_SVADHISHTHANA = "MENU_LIMIT_SVADHISHTHANA";
+  public static final String MENU_LIMIT_MANIPURA = "MENU_LIMIT_MANIPURA";
+  public static final String MENU_LIMIT_ANAHATA = "MENU_LIMIT_ANAHATA";
+  public static final String MENU_LIMIT_VISHUDDHA = "MENU_LIMIT_VISHUDDHA";
+  public static final String MENU_LIMIT_AJNA = "MENU_LIMIT_AJNA";
+  public static final String MENU_LIMIT_FULL = "MENU_LIMIT_FULL";
+
+  public static final String PROGRAM_MULADHARA_INTRO = "PROGRAM_MULADHARA_INTRO";
+  public static final String PROGRAM_SVADHISHTHANA_INTRO = "PROGRAM_SVADHISHTHANA_INTRO";
+  public static final String PROGRAM_MANIPURA_INTRO = "PROGRAM_MANIPURA_INTRO";
+  public static final String PROGRAM_ANAHATA_INTRO = "PROGRAM_ANAHATA_INTRO";
+  public static final String PROGRAM_VISHUDDHA_INTRO = "PROGRAM_VISHUDDHA_INTRO";
+  public static final String PROGRAM_AJNA_INTRO = "PROGRAM_AJNA_INTRO";
 }
 
