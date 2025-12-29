@@ -10,6 +10,7 @@ import app.core.broadcast.SubscriberService;
 import app.module.node.texts.BotTextService;
 import app.module.node.texts.TextMarker;
 import app.module.node.web.MediaService;
+import app.module.program.ProgramService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
@@ -26,6 +27,8 @@ public class StartCommandHandler implements CommandHandler {
 
   private final BotTextService textService;
   private final UserStateService userStateService;
+  private final SubscriberService subscriberService;
+  private final ProgramService programService;
 
   @Override
   public String command() {
@@ -35,7 +38,26 @@ public class StartCommandHandler implements CommandHandler {
   @Override
   public BotResponse handle(Message message) {
     Long chatId = message.getChatId();
+    String username = message.getFrom().getUserName();
     String firstName = message.getFrom().getFirstName();
+
+    if (programService.checkUserAccessProgram(chatId)) {
+      CompositeResponse compositeResponse = new CompositeResponse(new ArrayList<>());
+
+      TextResponse text = new TextResponse(chatId,
+          textService.format("START", firstName != null ? firstName : "друг"), null);
+
+      TextResponse programText = new TextResponse(chatId, "Тебе уже доступен курс. Давай продолжим?",
+          KeyboardFactory.from(Collections.singletonList(new
+              KeyboardOption("Хорошо!", TextMarker.PROGRAM))));
+
+      compositeResponse.responses().add(text);
+      compositeResponse.responses().add(programText);
+
+      return compositeResponse;
+    }
+
+    subscriberService.subscribe(chatId, username, firstName);
     userStateService.setState(chatId, UserState.DEFAULT);
 
     CompositeResponse compositeResponse = new CompositeResponse(new ArrayList<>());

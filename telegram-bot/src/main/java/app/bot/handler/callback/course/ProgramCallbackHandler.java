@@ -8,6 +8,7 @@ import app.bot.state.UserState;
 import app.bot.state.UserStateService;
 import app.core.program.CompositeProgramMessage;
 import app.core.program.ProgramMessage;
+import app.module.chat.service.ChatHistoryService;
 import app.module.node.texts.BotTextService;
 import app.module.node.texts.TextMarker;
 import app.module.program.ProgramService;
@@ -27,6 +28,7 @@ public class ProgramCallbackHandler implements CallbackHandler {
   private final ProgramService programService;
   private final BotTextService textService;
   private final UserStateService userStateService;
+  private final ChatHistoryService chatHistoryService;
 
 
   @Override
@@ -41,14 +43,22 @@ public class ProgramCallbackHandler implements CallbackHandler {
 
     if (programService.checkUserAccessProgram(chatId)) {
       userStateService.setState(chatId, UserState.COURSE);
+      chatHistoryService.logUserMessage(chatId, "Пользователь нажал на кнопку");
+
+      if (programService.isLimitReached(chatId)) {
+        chatHistoryService.logBotMessage(chatId, textService.format(TextMarker.TODAY_LIMIT));
+        return new TextResponse(chatId, textService.format(TextMarker.TODAY_LIMIT), null);
+      }
+
       Object response = programService.nextMessage(chatId);
+      CompositeResponse compositeResponse = new CompositeResponse(new ArrayList<>());
 
       log.info("response = " + response);
 
-      CompositeResponse compositeResponse = new CompositeResponse(new ArrayList<>());
 
-      if (response instanceof CompositeProgramMessage cm){
+      if (response instanceof CompositeProgramMessage cm) {
         for (ProgramMessage m : cm.responses()) {
+          chatHistoryService.logBotMessage(chatId, textService.format(m.text()));
           compositeResponse.responses().add(new TextResponse(chatId, textService.format(m.text()),
               KeyboardFactory.toKeyboard(m.options())));
         }
@@ -56,25 +66,26 @@ public class ProgramCallbackHandler implements CallbackHandler {
       }
 
       if (response instanceof ProgramMessage m) {
-          compositeResponse.responses().add(new TextResponse(chatId, textService.format(m.text()),
-              KeyboardFactory.toKeyboard(m.options())));
+        chatHistoryService.logBotMessage(chatId, textService.format(m.text()));
+        compositeResponse.responses().add(new TextResponse(chatId, textService.format(m.text()),
+            KeyboardFactory.toKeyboard(m.options())));
 
 
-        if (m.text().endsWith(TextMarker.AUDIO_MARKER)){
+        if (m.text().endsWith(TextMarker.AUDIO_MARKER)) {
           compositeResponse.responses().add(new MediaResponse(chatId, MediaType.AUDIO, m.text()));
         }
 
         log.info("compositeResponse = " + compositeResponse);
         return compositeResponse;
       }
-    }
-    else {
+    } else {
       Object response = programService.startProgram(chatId);
       userStateService.setState(chatId, UserState.COURSE);
 
       log.info("start course");
       log.info("response = " + response);
       if (response instanceof ProgramMessage m) {
+        chatHistoryService.logBotMessage(chatId, textService.format(m.text()));
         return new TextResponse(chatId, textService.format(m.text()),
             KeyboardFactory.toKeyboard(m.options()));
       }

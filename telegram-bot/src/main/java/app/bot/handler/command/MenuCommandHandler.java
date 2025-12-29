@@ -80,7 +80,7 @@ public class MenuCommandHandler implements CommandHandler {
       }
       else if (progressService.getTodayLimit(chatId).equals("PROGRAM_SAHASRARA_AUDIO") ||
                progressService.getTodayLimit(chatId).equals("PROGRAM_SAHASRARA_PRACTICE_TASK") ||
-               progressService.getTodayLimit(chatId).equals("PROGRAM_THANKS")){
+               progressService.getTodayLimit(chatId).equals("PROGRAM_SAHASRARA_END")){
         text = new TextResponse(chatId, textService.format(TextMarker.MENU_LIMIT_FULL),
             KeyboardFactory.from(List.of(
                 new KeyboardOption("Муладхара", TextMarker.MENU_LIMIT_SVADHISHTHANA),

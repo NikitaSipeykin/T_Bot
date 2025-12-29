@@ -17,7 +17,7 @@ import java.util.List;
 
 @Component
 @RequiredArgsConstructor
-public class PaymentCallbackHandler  implements CallbackHandler {
+public class PaymentCallbackHandler implements CallbackHandler {
 
   private final UserStateService userStateService;
 
@@ -29,14 +29,17 @@ public class PaymentCallbackHandler  implements CallbackHandler {
   @Override
   public BotResponse handle(CallbackQuery query) {
     Long chatId = query.getMessage().getChatId();
-    userStateService.setState(chatId, UserState.PAYMENT);
+    if (userStateService.getState(chatId).equals(UserState.PAYMENT) ||
+        userStateService.getState(chatId).equals(UserState.NEED_PAYMENT)) {
+      userStateService.setState(chatId, UserState.PAYMENT);
 
-    return new TextResponse(chatId, "Выберите валюту для оплаты",
-        KeyboardFactory.from(List.of(
-            new KeyboardOption("UZS", "UZS"),
-            new KeyboardOption("USD", "USD"),
-            new KeyboardOption("EUR", "EUR"),
-            new KeyboardOption("RUB", "RUB"))));
+      return new TextResponse(chatId, "Выберите валюту для оплаты",
+          KeyboardFactory.from(List.of(
+              new KeyboardOption("UZS", "UZS"),
+              new KeyboardOption("USD", "USD"),
+              new KeyboardOption("EUR", "EUR"),
+              new KeyboardOption("RUB", "RUB"))));
+    }
+    return new TextResponse(chatId, "Сейчас оплата не доступна. Попробуйте вызвать меню", null);
   }
-
 }

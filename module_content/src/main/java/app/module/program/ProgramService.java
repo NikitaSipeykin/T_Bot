@@ -63,16 +63,23 @@ public class ProgramService implements AccessService {
         log.info("into button msg");
 
         String button = progressService.getCurrentButton(chatId);
-        options = List.of(new AnswerOption(0L, button, TextMarker.PROGRAM));
+        if (currentBlock.endsWith(TextMarker.PROGRAM_SAHASRARA_END)){
+          options = List.of(new AnswerOption(0L, button, TextMarker.END_PROGRAM));
+        }else {
+          options = List.of(new AnswerOption(0L, button, TextMarker.PROGRAM));
+        }
+
       }
       //without buttons
       else if (currentBlock.endsWith(TextMarker.QUESTIONS_MARKER)) {
         CompositeProgramMessage compositeProgramMessage = new CompositeProgramMessage(new ArrayList<>());
+        progressService.moveToNextBlock(chatId);
         ProgramMessage messageOne = new ProgramMessage(currentBlock, options, true);
         ProgramMessage messageTwo = new ProgramMessage(progressService.getCurrentBlock(chatId), options, true);
 
         compositeProgramMessage.responses().add(messageOne);
         compositeProgramMessage.responses().add(messageTwo);
+        progressService.moveToNextBlock(chatId);
 
         return compositeProgramMessage;
       }
@@ -92,6 +99,11 @@ public class ProgramService implements AccessService {
 
   public void moveToTopic(Long chatId, String topicName){
     progressService.setProgress(chatId, topicName);
+  }
+
+  public boolean isLimitReached(Long chatId){
+    String currentBlock = progressService.getCurrentBlock(chatId);
+    return !progressService.canUserAccessBlock(chatId, currentBlock);
   }
 
   public boolean checkUserAccessProgram(Long chatId) {

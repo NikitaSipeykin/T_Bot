@@ -8,6 +8,7 @@ import app.bot.state.UserState;
 import app.bot.state.UserStateService;
 import app.core.program.CompositeProgramMessage;
 import app.core.program.ProgramMessage;
+import app.module.chat.service.ChatHistoryService;
 import app.module.node.texts.BotTextService;
 import app.module.node.texts.TextMarker;
 import app.module.program.ProgramService;
@@ -29,6 +30,7 @@ public class ProgramMessageHandler implements MessageHandler {
   private final ProgramService programService;
   private final BotTextService textService;
   private final UserStateService userStateService;
+  private final ChatHistoryService chatHistoryService;
 
   @Override
   public UserState supports() {
@@ -41,20 +43,31 @@ public class ProgramMessageHandler implements MessageHandler {
 
     if (programService.checkUserAccessProgram(chatId)) {
       userStateService.setState(chatId, UserState.COURSE);
-      Object response = programService.nextMessage(chatId);
+      chatHistoryService.logUserMessage(chatId, message.getText());
 
+
+      if (programService.isLimitReached(chatId)){
+        chatHistoryService.logBotMessage(chatId, textService.format(TextMarker.TODAY_LIMIT));
+        return new TextResponse(chatId, textService.format(TextMarker.TODAY_LIMIT), null);
+      }
+
+      Object response = programService.nextMessage(chatId);
       CompositeResponse compositeResponse = new CompositeResponse(new ArrayList<>());
 
       if (response instanceof CompositeProgramMessage cm) {
         log.info("PMH CompMes = " + cm);
         for (ProgramMessage m : cm.responses()) {
-          compositeResponse.responses().add(new TextResponse(chatId, textService.format(m.text()), KeyboardFactory.toKeyboard(m.options())));
+          chatHistoryService.logBotMessage(chatId, textService.format(m.text()));
+          compositeResponse.responses().add(new TextResponse(chatId, textService.format(m.text()),
+              KeyboardFactory.toKeyboard(m.options())));
         }
         return compositeResponse;
       }
 
       if (response instanceof ProgramMessage m) {
-        compositeResponse.responses().add(new TextResponse(chatId, textService.format(m.text()), KeyboardFactory.toKeyboard(m.options())));
+        chatHistoryService.logBotMessage(chatId, textService.format(m.text()));
+        compositeResponse.responses().add(new TextResponse(chatId, textService.format(m.text()),
+            KeyboardFactory.toKeyboard(m.options())));
 
         if (m.text().endsWith(TextMarker.AUDIO_MARKER)) {
           compositeResponse.responses().add(new MediaResponse(chatId, MediaType.AUDIO, m.text()));

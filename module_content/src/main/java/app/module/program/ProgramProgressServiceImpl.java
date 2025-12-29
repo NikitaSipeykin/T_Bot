@@ -131,10 +131,6 @@ public class ProgramProgressServiceImpl implements ProgramProgressService {
              "currentBlock = " + currentBlock);
 
     return limitBlock.get().getId() >= currentBlock.get().getId();
-
-//    log.info("\nblockName = " + blockName + ";\n" +
-//             "todayLimit = " + todayLimitName + ";\n" );
-//    return todayLimit != null && isBlockBeforeOrEqual(blockName, todayLimit);
   }
 
   // ============================================================

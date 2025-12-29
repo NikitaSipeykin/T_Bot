@@ -23,7 +23,9 @@
         <module>module_media-note</module>
         <module>module_content</module>
         <module>module_payment</module>
+        <module>module_chat-log</module>
         <module>telegram-bot</module>
+
     </modules>
 
     <properties>
