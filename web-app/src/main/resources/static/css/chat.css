@@ -1,0 +1,133 @@
+body {
+  margin: 0;
+  background: #f4f6f9;
+  font-family: Arial, sans-serif;
+}
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.container {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  margin-top: 20px;
+  width: 100%;
+  max-width: 480px;
+}
+
+.container.wide {
+  max-width: 640px;
+}
+
+h2 {
+  margin-top: 0;
+  text-align: center;
+}
+
+/* ===== CHAT LIST ===== */
+
+#search {
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  margin-bottom: 15px;
+}
+
+.chat-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.chat-row {
+  padding: 12px;
+  border-radius: 8px;
+  background: #f1f1f1;
+  cursor: pointer;
+}
+
+.chat-row:hover {
+  background: #e2e2e2;
+}
+
+.chat-title {
+  font-weight: bold;
+}
+
+.chat-preview {
+  color: #555;
+  font-size: 14px;
+  margin-top: 4px;
+}
+
+.chat-time {
+  font-size: 12px;
+  color: #888;
+  margin-top: 4px;
+}
+
+/* ===== CHAT VIEW ===== */
+
+.chat-container {
+  height: 80vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.messages {
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.message {
+  max-width: 70%;
+}
+
+.message.user {
+  align-self: flex-end;
+}
+
+.message.bot {
+  align-self: flex-start;
+}
+
+.bubble {
+  padding: 10px 14px;
+  border-radius: 12px;
+}
+
+.message.user .bubble {
+  background: #dcf8c6;
+}
+
+.message.bot .bubble {
+  background: #eee;
+}
+
+.time {
+  font-size: 11px;
+  color: #777;
+  margin-top: 2px;
+}
+
+/* ===== BUTTONS ===== */
+
+.buttons {
+  display: flex;
+  gap: 6px;
+  margin-left: 10px;
+}
+
+.buttons button {
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  background: #fafafa;
+}
