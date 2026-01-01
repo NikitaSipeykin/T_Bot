@@ -28,6 +28,17 @@ public class SubscriberRepository {
     return jdbc.queryForList("SELECT chat_id FROM subscribers WHERE active = TRUE", Long.class);
   }
 
+  public String findDisplayNameByChatId(Long chatId) {
+    return jdbc.queryForObject(
+        "SELECT COALESCE(username, first_name) " +
+        "FROM subscribers WHERE chat_id = ?",
+        String.class,
+        chatId
+    );
+  }
+
+
+
   public void saveEmail(Long chatId, String email) {
     jdbc.update(
         "UPDATE subscribers SET email = ? WHERE chat_id = ?",

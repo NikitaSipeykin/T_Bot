@@ -1,6 +1,7 @@
 package app.module.chat.dto;
 
 import java.time.Instant;
+import java.util.Optional;
 
 public class ConversationListItemDto {
 

@@ -13,14 +13,14 @@ function renderChats(chats) {
   chatList.innerHTML = '';
 
   chats
-    .filter(c => !query || String(c.chatId).includes(query))
+    .filter(c => !query || (c.username && c.username.toLowerCase().includes(query.toLowerCase())))
     .forEach(c => {
       const div = document.createElement('div');
       div.className = 'chat-row';
       div.onclick = () => location.href = `/chats/${c.conversationId}`;
 
       div.innerHTML = `
-        <div class="chat-title">Chat ID: ${c.chatId}</div>
+        <div class="chat-title">${c.username || 'Без имени'}</div>
         <div class="chat-preview">${c.lastMessageText || ''}</div>
         <div class="chat-time">
           ${c.lastMessageAt ? new Date(c.lastMessageAt).toLocaleString() : ''}

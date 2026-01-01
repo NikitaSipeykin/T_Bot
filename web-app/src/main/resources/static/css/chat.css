@@ -1,40 +1,8 @@
-body {
-  margin: 0;
-  background: #f4f6f9;
-  font-family: Arial, sans-serif;
-}
-
-.wrapper {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.container {
-  background: white;
-  padding: 20px;
-  border-radius: 12px;
-  margin-top: 20px;
-  width: 100%;
-  max-width: 480px;
-}
-
-.container.wide {
-  max-width: 640px;
-}
-
-h2 {
-  margin-top: 0;
-  text-align: center;
-}
+/* chat.css */
 
 /* ===== CHAT LIST ===== */
 
 #search {
-  width: 100%;
-  padding: 10px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
   margin-bottom: 15px;
 }
 
@@ -63,7 +31,14 @@ h2 {
   color: #555;
   font-size: 14px;
   margin-top: 4px;
+
+  /* ===== ОГРАНИЧЕНИЕ ТЕКСТА ===== */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;       /* количество строк */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
+
 
 .chat-time {
   font-size: 12px;
@@ -80,6 +55,7 @@ h2 {
 }
 
 .messages {
+  flex: 1;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
@@ -115,19 +91,4 @@ h2 {
   font-size: 11px;
   color: #777;
   margin-top: 2px;
-}
-
-/* ===== BUTTONS ===== */
-
-.buttons {
-  display: flex;
-  gap: 6px;
-  margin-left: 10px;
-}
-
-.buttons button {
-  padding: 6px 10px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-  background: #fafafa;
 }

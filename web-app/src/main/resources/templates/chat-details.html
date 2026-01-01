@@ -3,6 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <title>Чат</title>
+    <link rel="stylesheet" href="/css/base.css">
+    <link rel="stylesheet" href="/css/layout.css">
+    <link rel="stylesheet" href="/css/components.css">
     <link rel="stylesheet" href="/css/chat.css">
 </head>
 <body>
@@ -16,5 +19,11 @@
 </div>
 
 <script src="/js/chat-details.js"></script>
+<script>
+        fetch("/common/header.html")
+            .then(res => res.text())
+            .then(html => document.getElementById("header").innerHTML = html);
+
+</script>
 </body>
 </html>
