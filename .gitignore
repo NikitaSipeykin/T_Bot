@@ -51,6 +51,7 @@ build/
 
 ### Properties ###
 application-secret.properties
+application.yml
 **/application-secret.properties
 **/application.properties
 !**/application.properties.example

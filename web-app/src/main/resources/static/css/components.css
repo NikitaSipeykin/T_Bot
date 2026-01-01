@@ -1,0 +1,64 @@
+/* components.css */
+
+textarea,
+input[type="text"] {
+    width: 100%;
+    resize: none;
+    padding: 12px;
+    border: 1px solid #ccd1d7;
+    border-radius: 8px;
+    font-size: 15px;
+    outline: none;
+    transition: 0.2s;
+    box-sizing: border-box;
+}
+
+textarea {
+  height: 150px;
+  resize: vertical;
+}
+
+textarea:focus,
+input:focus {
+  border-color: #4A90E2;
+  box-shadow: 0 0 0 3px rgba(74,144,226,0.2);
+}
+
+.text-item {
+    margin-bottom: 25px;
+}
+
+.text-item textarea {
+    width: 100%;
+    height: 120px;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid #ccd1d7;
+    resize: vertical;
+}
+
+button {
+  margin-top: 15px;
+  width: 100%;
+  padding: 12px;
+  background: #4A90E2;
+  border: none;
+  color: white;
+  font-size: 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+button:hover {
+  background: #357ABD;
+}
+
+.video-row {
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+.video-row button {
+    margin-left: 10px;
+}

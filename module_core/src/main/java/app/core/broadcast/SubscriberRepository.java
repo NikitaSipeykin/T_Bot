@@ -4,6 +4,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class SubscriberRepository {
@@ -26,6 +27,17 @@ public class SubscriberRepository {
   public List<Long> findActiveChatIds() {
     return jdbc.queryForList("SELECT chat_id FROM subscribers WHERE active = TRUE", Long.class);
   }
+
+  public String findDisplayNameByChatId(Long chatId) {
+    return jdbc.queryForObject(
+        "SELECT COALESCE(username, first_name) " +
+        "FROM subscribers WHERE chat_id = ?",
+        String.class,
+        chatId
+    );
+  }
+
+
 
   public void saveEmail(Long chatId, String email) {
     jdbc.update(
