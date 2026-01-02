@@ -25,6 +25,7 @@
         <module>module_payment</module>
         <module>module_chat-log</module>
         <module>telegram-bot</module>
+        <module>module_analytics</module>
 
     </modules>
 

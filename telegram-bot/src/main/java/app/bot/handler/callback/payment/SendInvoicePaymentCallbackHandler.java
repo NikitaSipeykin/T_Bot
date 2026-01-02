@@ -4,6 +4,7 @@ import app.bot.bot.responce.BotResponse;
 import app.bot.bot.responce.CompositeResponse;
 import app.bot.bot.responce.SendInvoiceResponse;
 import app.bot.bot.responce.TextResponse;
+import app.bot.facade.AnalyticsFacade;
 import app.bot.handler.callback.CallbackHandler;
 import app.bot.keyboard.KeyboardFactory;
 import app.bot.keyboard.KeyboardOption;
@@ -31,6 +32,7 @@ public class SendInvoicePaymentCallbackHandler implements CallbackHandler {
   private final PaymentProperties paymentProperties;
   private final PaymentService paymentService;
   private final ExchangeRateServiceImpl rateService;
+  private final AnalyticsFacade analytics;
 
   @Override
   public boolean supports(String callbackData) {
@@ -45,6 +47,7 @@ public class SendInvoicePaymentCallbackHandler implements CallbackHandler {
     String currency = query.getData();
     Long chatId = query.getMessage().getChatId();
     userStateService.setState(chatId, UserState.PAYMENT);
+    analytics.trackButtonClick(query, "CURRENCY_" + currency);
 
     try {
       PaymentOption option = paymentProperties.resolve(currency);
@@ -57,6 +60,7 @@ public class SendInvoicePaymentCallbackHandler implements CallbackHandler {
       } else amount = price;
 
       String payload = "program_access_" + chatId;
+      analytics.trackPaymentStart(chatId, payload, amount, currency);
 
       paymentService.createPayment(chatId, payload, amount, currency);
 
@@ -82,9 +86,11 @@ public class SendInvoicePaymentCallbackHandler implements CallbackHandler {
 
       compositeResponse.responses().add(invoiceResponse);
       compositeResponse.responses().add(response);
+      analytics.trackInvoiceShown(chatId, payload, currency);
 
       return compositeResponse;
     } catch (IllegalStateException e) {
+      analytics.trackPaymentUnavailable(chatId, currency, e.getMessage());
       return new TextResponse(chatId, "Оплата в данной валюте временно недоступна", null);
     }
   }

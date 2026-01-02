@@ -2,6 +2,7 @@ package app.bot.handler.command;
 
 import app.bot.bot.Commands;
 import app.bot.bot.responce.*;
+import app.bot.facade.AnalyticsFacade;
 import app.bot.keyboard.KeyboardFactory;
 import app.bot.keyboard.KeyboardOption;
 import app.bot.state.UserState;
@@ -29,6 +30,7 @@ public class StartCommandHandler implements CommandHandler {
   private final UserStateService userStateService;
   private final SubscriberService subscriberService;
   private final ProgramService programService;
+  private final AnalyticsFacade analytics;
 
   @Override
   public String command() {
@@ -42,6 +44,9 @@ public class StartCommandHandler implements CommandHandler {
     String firstName = message.getFrom().getFirstName();
 
     if (programService.checkUserAccessProgram(chatId)) {
+      analytics.trackSubscribe(message, true);
+      analytics.trackBlockView(chatId, "PROGRAM_CONTINUE");
+
       CompositeResponse compositeResponse = new CompositeResponse(new ArrayList<>());
 
       TextResponse text = new TextResponse(chatId,
@@ -59,6 +64,9 @@ public class StartCommandHandler implements CommandHandler {
 
     subscriberService.subscribe(chatId, username, firstName);
     userStateService.setState(chatId, UserState.DEFAULT);
+
+    analytics.trackSubscribe(message, false);
+    analytics.trackBlockView(chatId, "START");
 
     CompositeResponse compositeResponse = new CompositeResponse(new ArrayList<>());
 
