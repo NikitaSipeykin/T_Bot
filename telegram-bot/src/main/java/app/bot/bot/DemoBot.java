@@ -83,8 +83,7 @@ public class DemoBot extends BaseTelegramBot {
     log.warn("Unhandled update: {}", update);
   }
 
-  //todo: back to default @Scheduled(cron = "00 00 08 * * *")
-  @Scheduled(cron = "*/30 * * * * *")
+  @Scheduled(cron = "00 00 08 * * *")
   public void scheduledDailyUpdate() {
     log.info("DB daily update");
 

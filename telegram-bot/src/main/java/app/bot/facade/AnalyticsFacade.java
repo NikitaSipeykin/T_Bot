@@ -19,6 +19,15 @@ public class AnalyticsFacade {
 
   private final AnalyticsEventService service;
 
+  public void adminQuestionSent(Long chatId) {
+    trackSafe(
+        AnalyticsEventCreateDto.builder()
+            .chatId(chatId)
+            .eventType("ADMIN_QUESTION_SENT")
+            .build()
+    );
+  }
+
   /* =========================
    TEST
    ========================= */
@@ -136,7 +145,6 @@ public class AnalyticsFacade {
             .build()
     );
   }
-
 
   public void trackInvoiceShown(Long chatId, String payload, String currency) {
     trackSafe(
