@@ -125,6 +125,19 @@ public class AnalyticsFacade {
     );
   }
 
+  public void trackPaymentSuccess(Long chatId) {
+    trackSafe(
+        AnalyticsEventCreateDto.builder()
+            .chatId(chatId)
+            .eventType("PAYMENT_SUCCESS")
+            .metadata(Map.of(
+                "source", "telegram"
+            ))
+            .build()
+    );
+  }
+
+
   public void trackInvoiceShown(Long chatId, String payload, String currency) {
     trackSafe(
         AnalyticsEventCreateDto.builder()
