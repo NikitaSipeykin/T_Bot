@@ -2,6 +2,7 @@ package app.bot.handler.command;
 
 import app.bot.bot.responce.BotResponse;
 import app.bot.bot.responce.TextResponse;
+import app.bot.facade.AnalyticsFacade;
 import app.bot.keyboard.KeyboardFactory;
 import app.bot.keyboard.KeyboardOption;
 import app.module.node.texts.BotTextService;
@@ -21,6 +22,7 @@ public class UnsubscribeCommandHandler implements CommandHandler {
 
   private final SubscriberService subscriberService;
   private final BotTextService textService;
+  private final AnalyticsFacade analytics;
 
   @Override
   public String command() {
@@ -32,6 +34,7 @@ public class UnsubscribeCommandHandler implements CommandHandler {
     Long chatId = message.getChatId();
 
     subscriberService.unsubscribe(chatId);
+    analytics.trackUnsubscribe(message);
 
     return new TextResponse(chatId, textService.format(TextMarker.UNSUBSCRIBE),null);
   }

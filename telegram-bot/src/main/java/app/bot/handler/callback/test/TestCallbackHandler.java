@@ -3,6 +3,7 @@ package app.bot.handler.callback.test;
 import app.bot.bot.responce.BotResponse;
 import app.bot.bot.responce.CompositeResponse;
 import app.bot.bot.responce.TextResponse;
+import app.bot.facade.AnalyticsFacade;
 import app.bot.handler.callback.CallbackHandler;
 import app.bot.state.UserStateService;
 import app.core.broadcast.SubscriberService;
@@ -33,6 +34,8 @@ public class TestCallbackHandler implements CallbackHandler {
   private final BotTextService textService;
   private final SubscriberService subscriberService;
   private final UserStateService userStateService;
+  private final AnalyticsFacade analytics;
+
 
   @Override
   public boolean supports(String callbackData) {
@@ -43,6 +46,10 @@ public class TestCallbackHandler implements CallbackHandler {
   public BotResponse handle(CallbackQuery query) {
     Long chatId = query.getMessage().getChatId();
     String data = query.getData();
+
+    analytics.trackButtonClick(query, data);
+    analytics.trackTestAnswer(chatId, data);
+
     userStateService.setState(chatId, UserState.DEFAULT);
 
     Object response = testService.processAnswer(chatId, data);
@@ -53,12 +60,18 @@ public class TestCallbackHandler implements CallbackHandler {
       if (m.isNextTopic()) {
         compositeResponse.responses().add(new TextResponse(chatId, textService.get(TextMarker.GOT_YOU), null));
       }
+      analytics.trackTestQuestionShown(chatId, m.text().substring(0, 25));
       compositeResponse.responses().add(new TextResponse(chatId, m.text(), KeyboardFactory.toKeyboard(m.options())));
     }else if (response instanceof FinalMessage f) {
+
+      analytics.trackTestFinish(chatId, f.recommendedTopicNames().size());
+
       compositeResponse.responses().add(new TextResponse(chatId, f.text(), null));
       testService.saveResultTopics(chatId, f.recommendedTopicNames());
 
       if (Objects.equals(f.text(), textService.format(TextMarker.ALL_ZERO))) {
+        analytics.trackZeroResult(chatId);
+
         compositeResponse.responses().add(new TextResponse(chatId, textService.get(TextMarker.ALL_ZERO_RESULT),
             KeyboardFactory.from(List.of(new KeyboardOption("Хорошо!", TextMarker.VIBRATIONS_AND_CHAKRAS),
                 new KeyboardOption("Попробовать еще раз!", TextMarker.CHAKRA_INTRO)))));

@@ -3,6 +3,7 @@ package app.bot.handler.callback.test;
 import app.bot.bot.responce.BotResponse;
 import app.bot.bot.responce.CompositeResponse;
 import app.bot.bot.responce.TextResponse;
+import app.bot.facade.AnalyticsFacade;
 import app.bot.handler.callback.CallbackHandler;
 import app.bot.keyboard.KeyboardFactory;
 import app.bot.keyboard.KeyboardOption;
@@ -19,6 +20,7 @@ import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 
 @Component
@@ -29,6 +31,7 @@ public class StartTestCallbackHandler implements CallbackHandler {
   private final BotTextService textService;
   private final UserStateService userStateService;
   private final SubscriberService subscriberService;
+  private final AnalyticsFacade analytics;
 
   @Override
   public boolean supports(String callbackData) {
@@ -38,19 +41,27 @@ public class StartTestCallbackHandler implements CallbackHandler {
   @Override
   public BotResponse handle(CallbackQuery query) {
     Long chatId = query.getMessage().getChatId();
+    analytics.trackButtonClick(query, TextMarker.CHAKRA_INTRO);
     userStateService.setState(chatId, UserState.DEFAULT);
 
     CompositeResponse compositeResponse = new CompositeResponse(new ArrayList<>());
 
     if (!subscriberService.isFinishedTesting(chatId)) {
+      analytics.trackBlockView(chatId, TextMarker.CHAKRA_INTRO, Map.of());
+      analytics.trackTestStart(chatId);
+
       Object response = testService.startTest(chatId);
 
       compositeResponse.responses().add(new TextResponse(chatId, textService.get(TextMarker.CHAKRA_INTRO), null));
       if (response instanceof OutgoingMessage m) {
+        analytics.trackTestQuestionShown(chatId, m.text().substring(0, 25));
+
         compositeResponse.responses().add(new TextResponse(chatId, m.text(), KeyboardFactory.toKeyboard(m.options())));
         return compositeResponse;
       }
     }
+
+    analytics.trackTestAlreadyFinished(chatId);
 
     return new TextResponse(chatId, textService.get(TextMarker.TEST_END_ALREADY),
         KeyboardFactory.from(List.of(new KeyboardOption("Хочу больше!", TextMarker.VIBRATIONS_AND_CHAKRAS))));
