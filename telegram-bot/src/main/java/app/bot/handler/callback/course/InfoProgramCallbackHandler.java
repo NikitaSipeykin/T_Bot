@@ -2,6 +2,7 @@ package app.bot.handler.callback.course;
 
 import app.bot.bot.responce.BotResponse;
 import app.bot.bot.responce.TextResponse;
+import app.bot.facade.AnalyticsFacade;
 import app.bot.handler.callback.CallbackHandler;
 import app.bot.keyboard.KeyboardFactory;
 import app.bot.keyboard.KeyboardOption;
@@ -20,10 +21,10 @@ import java.util.List;
 @Component
 @RequiredArgsConstructor
 public class InfoProgramCallbackHandler implements CallbackHandler {
-  private final TestService testService;
   private final BotTextService textService;
   private final UserStateService userStateService;
-  private final SubscriberService subscriberService;
+  private final AnalyticsFacade analytics;
+
 
   @Override
   public boolean supports(String callbackData) {
@@ -34,6 +35,9 @@ public class InfoProgramCallbackHandler implements CallbackHandler {
   public BotResponse handle(CallbackQuery query) {
     Long chatId = query.getMessage().getChatId();
     userStateService.setState(chatId, UserState.NEED_PAYMENT);
+    analytics.trackButtonClick(query, TextMarker.INFO_PROGRAM);
+    analytics.trackBlockView(chatId, TextMarker.INFO_PROGRAM);
+    analytics.trackCtaShown(chatId, TextMarker.PAYMENT);
 
     return new TextResponse(chatId, textService.format(TextMarker.INFO_PROGRAM),
         KeyboardFactory.from(List.of(new KeyboardOption("Записаться на курс", TextMarker.PAYMENT))));

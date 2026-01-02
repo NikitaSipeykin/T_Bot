@@ -1,7 +1,6 @@
 package app.bot.handler.callback.course;
 
 import app.bot.bot.responce.BotResponse;
-import app.bot.bot.responce.CompositeResponse;
 import app.bot.bot.responce.TextResponse;
 import app.bot.handler.callback.CallbackHandler;
 import app.bot.keyboard.KeyboardFactory;
@@ -15,8 +14,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
+import app.bot.facade.AnalyticsFacade;
 
-import java.util.ArrayList;
+import java.util.Map;
+
 
 @Slf4j
 @Component
@@ -26,6 +27,7 @@ public class MenuLimitCallbackHandler implements CallbackHandler {
   private final ProgramService programService;
   private final BotTextService textService;
   private final UserStateService userStateService;
+  private final AnalyticsFacade analyticsFacade;
 
   @Override
   public boolean supports(String callbackData) {
@@ -44,15 +46,29 @@ public class MenuLimitCallbackHandler implements CallbackHandler {
     if (programService.checkUserAccessProgram(chatId)) {
       userStateService.setState(chatId, UserState.COURSE);
       String message = query.getData();
-      log.info("Callback data message = " + message);
+      analyticsFacade.trackButtonClick(query, message);
 
-      switch (message){
-        case TextMarker.MENU_LIMIT_SVADHISHTHANA -> programService.moveToTopic(chatId, TextMarker.PROGRAM_MULADHARA_INTRO);
-        case TextMarker.MENU_LIMIT_MANIPURA -> programService.moveToTopic(chatId, TextMarker.PROGRAM_SVADHISHTHANA_INTRO);
-        case TextMarker.MENU_LIMIT_ANAHATA -> programService.moveToTopic(chatId, TextMarker.PROGRAM_MANIPURA_INTRO);
-        case TextMarker.MENU_LIMIT_VISHUDDHA -> programService.moveToTopic(chatId, TextMarker.PROGRAM_ANAHATA_INTRO);
-        case TextMarker.MENU_LIMIT_AJNA -> programService.moveToTopic(chatId, TextMarker.PROGRAM_VISHUDDHA_INTRO);
-        case TextMarker.MENU_LIMIT_FULL -> programService.moveToTopic(chatId, TextMarker.PROGRAM_AJNA_INTRO);
+      String targetBlock = null;
+
+      switch (message) {
+        case TextMarker.MENU_LIMIT_SVADHISHTHANA -> targetBlock = TextMarker.PROGRAM_MULADHARA_INTRO;
+        case TextMarker.MENU_LIMIT_MANIPURA -> targetBlock = TextMarker.PROGRAM_SVADHISHTHANA_INTRO;
+        case TextMarker.MENU_LIMIT_ANAHATA -> targetBlock = TextMarker.PROGRAM_MANIPURA_INTRO;
+        case TextMarker.MENU_LIMIT_VISHUDDHA -> targetBlock = TextMarker.PROGRAM_ANAHATA_INTRO;
+        case TextMarker.MENU_LIMIT_AJNA -> targetBlock = TextMarker.PROGRAM_VISHUDDHA_INTRO;
+        case TextMarker.MENU_LIMIT_FULL -> targetBlock = TextMarker.PROGRAM_AJNA_INTRO;
+      }
+
+      if (targetBlock != null) {
+        programService.moveToTopic(chatId, targetBlock);
+
+        // 👉 аналитика просмотра блока
+        analyticsFacade.trackBlockView(chatId, targetBlock,
+            Map.of(
+                "source", "menu_limit",
+                "menu", message
+            )
+        );
       }
 
       Object response = programService.nextMessage(chatId);

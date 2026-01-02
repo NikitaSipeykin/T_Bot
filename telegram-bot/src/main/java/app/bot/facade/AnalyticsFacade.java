@@ -19,9 +19,9 @@ public class AnalyticsFacade {
 
   private final AnalyticsEventService service;
 
-      /* =========================
-       TEST
-       ========================= */
+  /* =========================
+   TEST
+   ========================= */
 
   public void trackTestStart(Long chatId) {
     trackSafe(
@@ -81,6 +81,10 @@ public class AnalyticsFacade {
     );
   }
 
+  /* =========================
+     TEST RESULT
+     ========================= */
+
   public void trackZeroResult(Long chatId) {
     trackSafe(
         AnalyticsEventCreateDto.builder()
@@ -89,10 +93,6 @@ public class AnalyticsFacade {
             .build()
     );
   }
-
-    /* =========================
-       TEST RESULT
-       ========================= */
 
   public void trackCtaShown(Long chatId, String cta) {
     trackSafe(
@@ -108,17 +108,45 @@ public class AnalyticsFacade {
   }
 
     /* =========================
-       SUBSCRIBE
+       PAYMENT START
        ========================= */
 
-  public void trackSubscribe(Message message, boolean isReturning) {
+  public void trackPaymentStart(Long chatId, String payload, int amount, String currency) {
     trackSafe(
         AnalyticsEventCreateDto.builder()
-            .chatId(message.getChatId())
-            .eventType(AnalyticsEventType.SUBSCRIBE.name())
+            .chatId(chatId)
+            .eventType(AnalyticsEventType.PAYMENT_START.name())
             .metadata(Map.of(
-                "is_returning", isReturning,
-                "source", "start_command"
+                "payload", payload,
+                "amount", amount,
+                "currency", currency
+            ))
+            .build()
+    );
+  }
+
+  public void trackInvoiceShown(Long chatId, String payload, String currency) {
+    trackSafe(
+        AnalyticsEventCreateDto.builder()
+            .chatId(chatId)
+            .eventType("INVOICE_SHOWN")
+            .blockName(TextMarker.PAYMENT)
+            .metadata(Map.of(
+                "payload", payload,
+                "currency", currency
+            ))
+            .build()
+    );
+  }
+
+  public void trackPaymentUnavailable(Long chatId, String currency, String reason) {
+    trackSafe(
+        AnalyticsEventCreateDto.builder()
+            .chatId(chatId)
+            .eventType("PAYMENT_UNAVAILABLE")
+            .metadata(Map.of(
+                "currency", currency,
+                "reason", reason
             ))
             .build()
     );
@@ -166,6 +194,23 @@ public class AnalyticsFacade {
     );
   }
 
+    /* =========================
+       SUBSCRIBE
+       ========================= */
+
+  public void trackSubscribe(Message message, boolean isReturning) {
+    trackSafe(
+        AnalyticsEventCreateDto.builder()
+            .chatId(message.getChatId())
+            .eventType(AnalyticsEventType.SUBSCRIBE.name())
+            .metadata(Map.of(
+                "is_returning", isReturning,
+                "source", "start_command"
+            ))
+            .build()
+    );
+  }
+
       /* =========================
        UNSUBSCRIBE
        ========================= */
@@ -183,35 +228,6 @@ public class AnalyticsFacade {
     );
   }
 
-    /* =========================
-       PAYMENT START
-       ========================= */
-
-  public void trackPaymentStart(Long chatId, Long paymentId, int amount) {
-    trackSafe(
-        AnalyticsEventCreateDto.builder()
-            .chatId(chatId)
-            .eventType(AnalyticsEventType.PAYMENT_START.name())
-            .paymentId(paymentId)
-            .metadata(Map.of(
-                "amount", amount
-            ))
-            .build()
-    );
-  }
-
-  public void trackPaymentUnavailable(Long chatId, String currency, String reason) {
-    trackSafe(
-        AnalyticsEventCreateDto.builder()
-            .chatId(chatId)
-            .eventType("PAYMENT_UNAVAILABLE")
-            .metadata(Map.of(
-                "currency", currency,
-                "reason", reason
-            ))
-            .build()
-    );
-  }
 
     /* =========================
        INTERNAL
@@ -221,7 +237,7 @@ public class AnalyticsFacade {
     try {
       service.track(dto);
     } catch (Exception e) {
-      log.error("Can't track analytics message. ");
+      log.warn("Analytics tracking failed", e);
     }
   }
 }

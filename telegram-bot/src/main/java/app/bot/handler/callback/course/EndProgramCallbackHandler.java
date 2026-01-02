@@ -6,7 +6,7 @@ import app.bot.state.UserState;
 import app.bot.state.UserStateService;
 import app.module.node.texts.BotTextService;
 import app.module.node.texts.TextMarker;
-import app.module.program.ProgramService;
+import app.bot.facade.AnalyticsFacade;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -17,9 +17,9 @@ import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 @RequiredArgsConstructor
 public class EndProgramCallbackHandler implements CallbackHandler {
 
-  private final ProgramService programService;
   private final BotTextService textService;
   private final UserStateService userStateService;
+  private final AnalyticsFacade analyticsFacade;
 
 
   @Override
@@ -30,7 +30,9 @@ public class EndProgramCallbackHandler implements CallbackHandler {
   @Override
   public BotResponse handle(CallbackQuery query) {
     Long chatId = query.getMessage().getChatId();
+    analyticsFacade.trackBlockView(chatId, TextMarker.END_PROGRAM);
     userStateService.setState(chatId, UserState.DEFAULT);
+    analyticsFacade.trackBlockView(chatId, TextMarker.PROGRAM_THANKS);
     return new TextResponse(chatId, textService.get(TextMarker.PROGRAM_THANKS), null);
   }
 }

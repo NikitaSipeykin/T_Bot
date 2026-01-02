@@ -1,6 +1,7 @@
 package app.bot.handler.message.course;
 
 import app.bot.bot.responce.*;
+import app.bot.facade.AnalyticsFacade;
 import app.bot.handler.message.MessageHandler;
 import app.bot.keyboard.KeyboardFactory;
 import app.bot.keyboard.KeyboardOption;
@@ -21,6 +22,7 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @Component
@@ -31,6 +33,8 @@ public class ProgramMessageHandler implements MessageHandler {
   private final BotTextService textService;
   private final UserStateService userStateService;
   private final ChatHistoryService chatHistoryService;
+  private final AnalyticsFacade analyticsFacade;
+
 
   @Override
   public UserState supports() {
@@ -48,6 +52,14 @@ public class ProgramMessageHandler implements MessageHandler {
 
       if (programService.isLimitReached(chatId)){
         chatHistoryService.logBotMessage(chatId, textService.format(TextMarker.TODAY_LIMIT));
+        analyticsFacade.trackBlockView(
+            chatId,
+            TextMarker.TODAY_LIMIT,
+            Map.of(
+                "source", "program_message",
+                "reason", "daily_limit"
+            )
+        );
         return new TextResponse(chatId, textService.format(TextMarker.TODAY_LIMIT), null);
       }
 
@@ -58,6 +70,13 @@ public class ProgramMessageHandler implements MessageHandler {
         log.info("PMH CompMes = " + cm);
         for (ProgramMessage m : cm.responses()) {
           chatHistoryService.logBotMessage(chatId, textService.format(m.text()));
+          analyticsFacade.trackBlockView(chatId, m.text(),
+              Map.of(
+                  "source", "program_message",
+                  "type", "composite"
+              )
+          );
+
           compositeResponse.responses().add(new TextResponse(chatId, textService.format(m.text()),
               KeyboardFactory.toKeyboard(m.options())));
         }
@@ -66,6 +85,13 @@ public class ProgramMessageHandler implements MessageHandler {
 
       if (response instanceof ProgramMessage m) {
         chatHistoryService.logBotMessage(chatId, textService.format(m.text()));
+        analyticsFacade.trackBlockView(chatId, m.text(),
+            Map.of(
+                "source", "program_message",
+                "type", "single"
+            )
+        );
+
         compositeResponse.responses().add(new TextResponse(chatId, textService.format(m.text()),
             KeyboardFactory.toKeyboard(m.options())));
 

@@ -1,7 +1,8 @@
 package app.bot.handler.callback.course;
 
-import app.bot.bot.Commands;
+
 import app.bot.bot.responce.*;
+import app.bot.facade.AnalyticsFacade;
 import app.bot.handler.callback.CallbackHandler;
 import app.bot.keyboard.KeyboardFactory;
 import app.bot.state.UserState;
@@ -29,6 +30,8 @@ public class ProgramCallbackHandler implements CallbackHandler {
   private final BotTextService textService;
   private final UserStateService userStateService;
   private final ChatHistoryService chatHistoryService;
+  private final AnalyticsFacade analyticsFacade;
+
 
 
   @Override
@@ -39,25 +42,28 @@ public class ProgramCallbackHandler implements CallbackHandler {
   @Override
   public BotResponse handle(CallbackQuery query) {
     Long chatId = query.getMessage().getChatId();
-    log.info("PCH handle() = ");
+    analyticsFacade.trackBlockView(chatId, TextMarker.PROGRAM);
 
     if (programService.checkUserAccessProgram(chatId)) {
       userStateService.setState(chatId, UserState.COURSE);
       chatHistoryService.logUserMessage(chatId, "Пользователь нажал на кнопку");
 
+
       if (programService.isLimitReached(chatId)) {
         chatHistoryService.logBotMessage(chatId, textService.format(TextMarker.TODAY_LIMIT));
+        analyticsFacade.trackBlockView(chatId, TextMarker.TODAY_LIMIT);
         return new TextResponse(chatId, textService.format(TextMarker.TODAY_LIMIT), null);
       }
 
       Object response = programService.nextMessage(chatId);
       CompositeResponse compositeResponse = new CompositeResponse(new ArrayList<>());
 
-      log.info("response = " + response);
+      log.debug("response = " + response);
 
 
       if (response instanceof CompositeProgramMessage cm) {
         for (ProgramMessage m : cm.responses()) {
+          analyticsFacade.trackBlockView(chatId, m.text());
           chatHistoryService.logBotMessage(chatId, textService.format(m.text()));
           compositeResponse.responses().add(new TextResponse(chatId, textService.format(m.text()),
               KeyboardFactory.toKeyboard(m.options())));
@@ -66,6 +72,7 @@ public class ProgramCallbackHandler implements CallbackHandler {
       }
 
       if (response instanceof ProgramMessage m) {
+        analyticsFacade.trackBlockView(chatId, m.text());
         chatHistoryService.logBotMessage(chatId, textService.format(m.text()));
         compositeResponse.responses().add(new TextResponse(chatId, textService.format(m.text()),
             KeyboardFactory.toKeyboard(m.options())));
@@ -75,23 +82,24 @@ public class ProgramCallbackHandler implements CallbackHandler {
           compositeResponse.responses().add(new MediaResponse(chatId, MediaType.AUDIO, m.text()));
         }
 
-        log.info("compositeResponse = " + compositeResponse);
+        log.debug("compositeResponse = " + compositeResponse);
         return compositeResponse;
       }
     } else {
       Object response = programService.startProgram(chatId);
       userStateService.setState(chatId, UserState.COURSE);
 
-      log.info("start course");
-      log.info("response = " + response);
+      log.debug("start course");
+      log.debug("response = " + response);
       if (response instanceof ProgramMessage m) {
+        analyticsFacade.trackBlockView(chatId, m.text());
         chatHistoryService.logBotMessage(chatId, textService.format(m.text()));
         return new TextResponse(chatId, textService.format(m.text()),
             KeyboardFactory.toKeyboard(m.options()));
       }
     }
 
-    log.error("USER IS MOT IM THE PROGRAM");
+    log.warn("USER IS MOT IM THE PROGRAM");
     return null;
   }
 }
