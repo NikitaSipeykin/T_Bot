@@ -24,13 +24,16 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build Telegram Bot
+      - name: Build and Push Telegram Bot
         run: |
-          docker build -t ghcr.io/nikitasipeykin/telegram-bot:latest -f telegram-bot/Dockerfile .
+          IMAGE=ghcr.io/nikitasipeykin/telegram-bot
+          TAG=${{ github.sha }}
 
-      - name: Push Telegram Bot
-        run: |
-          docker push ghcr.io/nikitasipeykin/telegram-bot:latest
+          docker build -t $IMAGE:$TAG -f telegram-bot/Dockerfile .
+          docker tag $IMAGE:$TAG $IMAGE:latest
+
+          docker push $IMAGE:$TAG
+          docker push $IMAGE:latest
 
   build_and_push_web:
     name: Build Web App Image
@@ -51,10 +54,13 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build Web App
+      - name: Build and Push Web App
         run: |
-          docker build -t ghcr.io/nikitasipeykin/web-app:latest -f web-app/Dockerfile .
+          IMAGE=ghcr.io/nikitasipeykin/web-app
+          TAG=${{ github.sha }}
 
-      - name: Push Web App
-        run: |
-          docker push ghcr.io/nikitasipeykin/web-app:latest
+          docker build -t $IMAGE:$TAG -f web-app/Dockerfile .
+          docker tag $IMAGE:$TAG $IMAGE:latest
+
+          docker push $IMAGE:$TAG
+          docker push $IMAGE:latest
