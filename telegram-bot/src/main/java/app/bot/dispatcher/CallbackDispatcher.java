@@ -22,7 +22,7 @@ public class CallbackDispatcher {
   public BotResponse dispatch(CallbackQuery query) {
     String data = query.getData();
 
-    log.info("Callback data = " + data);
+    log.debug("Callback data = " + data);
 
     CallbackHandler handler = handlers.stream()
         .filter(h -> h.supports(data))
@@ -31,7 +31,6 @@ public class CallbackDispatcher {
             "No CallbackHandler found for callbackData: " + data
         ));
 
-    log.info("handler = " + handler);
     log.debug("Callback [{}] handled by {}", data, handler.getClass().getSimpleName());
 
     return handler.handle(query);

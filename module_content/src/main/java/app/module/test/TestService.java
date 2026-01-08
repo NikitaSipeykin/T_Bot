@@ -45,7 +45,7 @@ public class TestService {
     if (state == null) {
       state = new TestState();
       stateService.put(chatId, state);
-      log.info("Создан новый TestState для chatId={}", chatId);
+      log.debug("Создан новый TestState для chatId={}", chatId);
 
       state.setCurrentQuestionIndex(1);
       state.setCurrentTopicIndex(1);
@@ -127,7 +127,7 @@ public class TestService {
 
     if (allZero) {
       stateService.reset(chatId);
-      log.info("finishTest - ALL_ZERO");
+      log.debug("finishTest - ALL_ZERO");
       return new FinalMessage(text.format(TextMarker.ALL_ZERO), null);
     }
 
@@ -179,11 +179,11 @@ public class TestService {
 
   public void saveResultTopics(Long chatId, List<String> names) {
     resultTopics.put(chatId, names);
-    log.info("resultTopics save = " + resultTopics);
+    log.debug("resultTopics save = " + resultTopics);
   }
 
   public List<String> getResultTopics(Long chatId) {
-    log.info("resultTopics get = " + resultTopics);
+    log.debug("resultTopics get = " + resultTopics);
     return resultTopics.getOrDefault(chatId, List.of());
 
   }

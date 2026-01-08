@@ -67,7 +67,7 @@ public class ProgramMessageHandler implements MessageHandler {
       CompositeResponse compositeResponse = new CompositeResponse(new ArrayList<>());
 
       if (response instanceof CompositeProgramMessage cm) {
-        log.info("PMH CompMes = " + cm);
+        log.debug("PMH CompMes = " + cm);
         for (ProgramMessage m : cm.responses()) {
           chatHistoryService.logBotMessage(chatId, textService.format(m.text()));
           analyticsFacade.trackBlockView(chatId, m.text(),
