@@ -84,7 +84,7 @@ public abstract class BaseTelegramBot extends TelegramLongPollingBot {
       // 5. State-based message
       if (update.hasMessage()) {
         BotResponse response = messageDispatcher.dispatch(update.getMessage());
-        log.info("response = " + response);
+        log.debug("response = " + response);
         if (response != null) {
           botResponseProcessor.process(response);
           return;

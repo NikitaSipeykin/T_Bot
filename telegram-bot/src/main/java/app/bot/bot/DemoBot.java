@@ -85,10 +85,10 @@ public class DemoBot extends BaseTelegramBot {
 
   @Scheduled(cron = "00 00 08 * * *")
   public void scheduledDailyUpdate() {
-    log.info("DB daily update");
+    log.debug("DB daily update");
 
     List<DailyUpdateResult> updates = programService.dailyUpdate();
-    log.info("updates = {}", updates);
+    log.info("Daily updates = {}", updates);
 
     for (DailyUpdateResult upd : updates) {
 

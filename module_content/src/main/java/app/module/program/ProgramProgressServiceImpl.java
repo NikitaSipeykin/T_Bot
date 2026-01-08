@@ -122,12 +122,12 @@ public class ProgramProgressServiceImpl implements ProgramProgressService {
     Optional<ProgramBlocks> limitBlock = blocksRepo.findByName(todayLimitName);
     Optional<ProgramBlocks> currentBlock = blocksRepo.findByName(blockName);
 
-    log.info("canUserAccessBlock() \n" +
+    log.debug("canUserAccessBlock() \n" +
              "chatId = " + chatId + "\n" +
              "blockName = " + blockName + "\n" +
              "todayLimitName = " + todayLimitName);
 
-    log.info("\nlimitBlock = " + limitBlock + ";\n" +
+    log.debug("\nlimitBlock = " + limitBlock + ";\n" +
              "currentBlock = " + currentBlock);
 
     return limitBlock.get().getId() >= currentBlock.get().getId();
@@ -208,7 +208,7 @@ public class ProgramProgressServiceImpl implements ProgramProgressService {
 
   private String findMaxAvailableLimit() {
     // fallback если пользователь прошёл больше дней, чем лимитов
-    log.info("findMaxAvailableLimit" + dailyLimitRepo.findAll().stream()
+    log.debug("findMaxAvailableLimit" + dailyLimitRepo.findAll().stream()
         .max(Comparator.comparingInt(DailyLimit::getDayNumber))
         .map(DailyLimit::getLimitBlock)
         .orElse(null));

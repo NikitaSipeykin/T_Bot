@@ -35,7 +35,7 @@ public class ProgramService implements AccessService {
   public ProgramResponse nextMessage(Long chatId) {
     if (progressService.isUserInProgram(chatId)) {
       ProgramResponse message = getMessage(chatId);
-      log.info("ProgramResponse message = " + message);
+      log.debug("ProgramResponse message = " + message);
       if (message != null) return message;
     }
     log.error("Не удалось отправить сообщение");
@@ -54,13 +54,13 @@ public class ProgramService implements AccessService {
       return new ProgramMessage(currentBlock, options, false);
     }
 
-    log.info("canAccess = " + canAccess);
+    log.debug("canAccess = " + canAccess);
     if (canAccess) {
       currentBlock = progressService.getCurrentBlock(chatId);
       //with buttons
       if (currentBlock.endsWith(TextMarker.INTRO_MARKER) || currentBlock.endsWith(TextMarker.PRACTICE_INTRO_MARKER) ||
           currentBlock.endsWith(TextMarker.END_MARKER)) {
-        log.info("into button msg");
+        log.debug("into button msg");
 
         String button = progressService.getCurrentButton(chatId);
         if (currentBlock.endsWith(TextMarker.PROGRAM_SAHASRARA_END)){
@@ -87,7 +87,7 @@ public class ProgramService implements AccessService {
     }
     //limit
     else {
-      log.info("inside TODAY_LIMIT");
+      log.debug("inside TODAY_LIMIT");
       currentBlock = TextMarker.TODAY_LIMIT;
     }
     return new ProgramMessage(currentBlock, options, false);

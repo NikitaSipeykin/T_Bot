@@ -64,8 +64,6 @@ public class TestCallbackHandler implements CallbackHandler {
       compositeResponse.responses().add(new TextResponse(chatId, m.text(), KeyboardFactory.toKeyboard(m.options())));
     }else if (response instanceof FinalMessage f) {
 
-      analytics.trackTestFinish(chatId, f.recommendedTopicNames().size());
-
       compositeResponse.responses().add(new TextResponse(chatId, f.text(), null));
       testService.saveResultTopics(chatId, f.recommendedTopicNames());
 
@@ -78,6 +76,8 @@ public class TestCallbackHandler implements CallbackHandler {
 
         return compositeResponse;
       }
+
+      analytics.trackTestFinish(chatId, f.recommendedTopicNames().size());
 
       subscriberService.setFinishedTest(chatId);
       compositeResponse.responses().add(new TextResponse(chatId, textService.format(TextMarker.RESULT),

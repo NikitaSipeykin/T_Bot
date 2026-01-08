@@ -27,7 +27,7 @@ public class InternalController {
   @PostMapping("/update-module")
   public String update(@RequestBody BotText text) {
     repository.save(text);
-    log.info("Updated bot module: {}", text.getId());
+    log.debug("Updated bot module: {}", text.getId());
     return "ok";
   }
 }

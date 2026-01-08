@@ -25,7 +25,7 @@ public class DailyLimit {
   }
 
   public String getLimitBlock() {
-    log.info("limitBlock = " + limitBlock);
+    log.debug("limitBlock = " + limitBlock);
     return limitBlock;
   }
 }

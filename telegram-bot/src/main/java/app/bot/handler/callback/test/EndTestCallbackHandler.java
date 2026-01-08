@@ -47,10 +47,10 @@ public class EndTestCallbackHandler implements CallbackHandler {
     List<String> topics = testService.getResultTopics(chatId);
     CompositeResponse compositeResponse = new CompositeResponse(new ArrayList<>());
 
-    log.info("topics = " + topics);
+    log.debug("topics = " + topics);
 
     for (String topic : topics) {
-      log.info("topic = " + topic);
+      log.debug("topic = " + topic);
       compositeResponse.responses().add(new TextResponse(chatId, textService.format(topic + "_PRESENT"), null));
     }
     analytics.trackCtaShown(chatId, TextMarker.VIBRATIONS_AND_CHAKRAS);

@@ -32,16 +32,16 @@ public class MessageDispatcher {
     UserState state = userStateService.getState(chatId);
     String text = message.getText();
 
-    log.info("Message text = " + text);
+    log.debug("Message text = " + text);
 
     if (text.equals("successPayment")){
       MessageHandler successHandler = handlers.get(UserState.SUCCESS_PAYMENT);
       return successHandler.handle(message);
     }
 
-    log.info("state = " + state);
+    log.debug("state = " + state);
     MessageHandler handler = handlers.get(state);
-    log.info("handler = " + handler);
+    log.debug("handler = " + handler);
     if (handler == null) {
       log.warn("No MessageHandler for state={}", state);
       return null;

@@ -28,14 +28,14 @@ public class BotRegistrar {
       TelegramBotsApi botsApi = new TelegramBotsApi(DefaultBotSession.class);
 
       if (isWebhookMode()) {
-        log.info("Starting Telegram bot in WEBHOOK mode");
+        log.debug("Starting Telegram bot in WEBHOOK mode");
         // Webhook регистрируется TelegramMessageSender / controller'ом
       } else {
-        log.info("Starting Telegram bot in LONG POLLING mode");
+        log.debug("Starting Telegram bot in LONG POLLING mode");
         botsApi.registerBot(bot);
       }
 
-      log.info(
+      log.debug(
           "Telegram bot registered successfully. Username={}",
           botProperties.getUsername()
       );
