@@ -60,5 +60,7 @@ public class TextMarker {
   public static final String PROGRAM_SAHASRARA_END = "PROGRAM_SAHASRARA_END";
   public static final String END_PROGRAM = "END_PROGRAM";
   public static final String PROGRAM_THANKS = "PROGRAM_THANKS";
+  public static final String MANUAL_PAYMENT = "MANUAL_PAYMENT";
+  public static final String SEND_PAYMENT_REQUEST = "SEND_PAYMENT_REQUEST";
 }
 
