@@ -1,6 +1,8 @@
 package app.bot.sender;
 
 import app.bot.bot.responce.*;
+
+import app.module.chat.service.ChatHistoryServiceImpl;
 import app.module.node.NoteService;
 import app.module.node.web.MediaService;
 import lombok.extern.slf4j.Slf4j;
@@ -8,7 +10,9 @@ import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.invoices.SendInvoice;
+import org.telegram.telegrambots.meta.api.methods.send.SendDocument;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.objects.InputFile;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
@@ -20,12 +24,14 @@ public class TelegramSender {
   private final ObjectProvider<TelegramLongPollingBot> botProvider;
   private final NoteService noteService;
   private final MediaService mediaService;
+  private final ChatHistoryServiceImpl historyService;
 
   public TelegramSender(ObjectProvider<TelegramLongPollingBot> botProvider,
-                        NoteService noteService, MediaService mediaService) {
+                        NoteService noteService, MediaService mediaService, ChatHistoryServiceImpl historyService) {
     this.botProvider = botProvider;
     this.noteService = noteService;
     this.mediaService = mediaService;
+    this.historyService = historyService;
   }
 
   public void send(BotResponse response) {
@@ -41,6 +47,9 @@ public class TelegramSender {
 
     } else if (response instanceof SendInvoiceResponse r){
       sendInvoice(r);
+
+    } else if (response instanceof HistoryResponse r) {
+      sendHistory(r);
     }
   }
 
@@ -53,7 +62,6 @@ public class TelegramSender {
       throw new RuntimeException(e);
     }
   }
-
 
   private void sendText(TextResponse r) {
     SendMessage message = new SendMessage(r.chatId().toString(), r.text());
@@ -69,7 +77,6 @@ public class TelegramSender {
       log.error("Error sending message to chatId={}", r.chatId(), e);
     }
   }
-
 
   private void sendMedia(MediaResponse r) {
 
@@ -119,6 +126,24 @@ public class TelegramSender {
         }
       }
 
+    }
+  }
+
+  private void sendHistory( HistoryResponse r){
+    try {
+      Long chatId = r.chatId();
+
+      File file = historyService.writeToFile(chatId, historyService.buildChatHistory(chatId));
+
+      SendDocument sendDocument = new SendDocument();
+      sendDocument.setChatId(chatId.toString());
+      sendDocument.setDocument(new InputFile(file));
+      sendDocument.setCaption("📄 История переписки");
+
+      botProvider.getObject().execute(sendDocument);
+
+    } catch (Exception e) {
+      log.error("Не удалось отправить историю чата chatId={}", r.chatId(), e);
     }
   }
 

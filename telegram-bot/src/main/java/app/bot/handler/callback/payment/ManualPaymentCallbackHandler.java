@@ -52,7 +52,7 @@ public class ManualPaymentCallbackHandler implements CallbackHandler {
         Пользователь отправил заявку на доступ к курсу.
               
         Chat ID: %d
-        Username: @%s
+        Username: %s
       
         Проверьте пожалуйста оплату.
         """.formatted(
