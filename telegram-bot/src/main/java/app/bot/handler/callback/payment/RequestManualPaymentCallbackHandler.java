@@ -2,6 +2,7 @@ package app.bot.handler.callback.payment;
 
 import app.bot.bot.responce.BotResponse;
 import app.bot.bot.responce.TextResponse;
+import app.bot.facade.AnalyticsFacade;
 import app.bot.handler.callback.CallbackHandler;
 import app.bot.keyboard.KeyboardFactory;
 import app.bot.keyboard.KeyboardOption;
@@ -17,13 +18,17 @@ import java.util.List;
 
 @Component
 @RequiredArgsConstructor
-public class PaymentCallbackHandler implements CallbackHandler {
+public class RequestManualPaymentCallbackHandler implements CallbackHandler {
 
   private final UserStateService userStateService;
+  private final AnalyticsFacade analytics;
+  private final BotTextService textService;
+
+
 
   @Override
   public boolean supports(String callbackData) {
-    return callbackData.equals("Telegram_Payment");
+    return callbackData.equals(TextMarker.PAYMENT);
   }
 
   @Override
@@ -33,12 +38,13 @@ public class PaymentCallbackHandler implements CallbackHandler {
         userStateService.getState(chatId).equals(UserState.NEED_PAYMENT)) {
       userStateService.setState(chatId, UserState.PAYMENT);
 
-      return new TextResponse(chatId, "Выберите валюту для оплаты",
+      String payload = "program_access_" + chatId;
+      analytics.trackPaymentStart(chatId, payload, 100, "USD");
+
+      return new TextResponse(chatId, textService.format(TextMarker.MANUAL_PAYMENT),
           KeyboardFactory.from(List.of(
-              new KeyboardOption("UZS", "UZS"),
-              new KeyboardOption("USD", "USD"),
-              new KeyboardOption("EUR", "EUR"),
-              new KeyboardOption("RUB", "RUB"))));
+              new KeyboardOption("Я оплатил", TextMarker.SEND_PAYMENT_REQUEST),
+              new KeyboardOption("Вернуться к описанию.", TextMarker.INFO_PROGRAM))));
     }
     return new TextResponse(chatId, "Сейчас оплата не доступна. Попробуйте вызвать меню", null);
   }

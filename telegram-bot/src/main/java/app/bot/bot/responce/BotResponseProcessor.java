@@ -25,6 +25,11 @@ public class BotResponseProcessor {
       return;
     }
 
+    if (response instanceof HistoryResponse history) {
+      sender.send(history);
+      return;
+    }
+
     if (response instanceof CompositeResponse composite) {
       sender.send(composite);
       return;

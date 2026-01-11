@@ -24,5 +24,7 @@ public interface ChatMessageRepository
         where m.messageText ilike %:query%
     """)
   List<ChatMessage> search(@Param("query") String query);
+
+  List<ChatMessage> findFirst37ByChatIdOrderByIdAsc(Long chatId);
 }
 

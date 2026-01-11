@@ -7,6 +7,11 @@ import app.module.chat.repo.ChatMessageRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+
 @Service
 @Transactional
 public class ChatHistoryServiceImpl
@@ -52,5 +57,39 @@ public class ChatHistoryServiceImpl
 
     return messageRepository.save(message);
   }
+
+  public String buildChatHistory(Long chatId) {
+    List<ChatMessage> messages = messageRepository.findFirst37ByChatIdOrderByIdAsc(chatId);
+
+    DateTimeFormatter formatter =
+        DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
+
+    StringBuilder sb = new StringBuilder();
+
+    for (ChatMessage msg : messages) {
+      sb.append("[")
+          .append(msg.getCreatedAt())
+          .append("] ")
+          .append(msg.getSenderType())
+          .append(":\n")
+          .append(msg.getMessageText())
+          .append("\n\n");
+    }
+
+    return sb.toString();
+  }
+
+  public File writeToFile(Long chatId, String content) throws IOException {
+    File file = new File("chat_" + chatId + ".txt");
+
+    try (Writer writer = new BufferedWriter(
+        new OutputStreamWriter(
+            new FileOutputStream(file), StandardCharsets.UTF_8))) {
+      writer.write(content);
+    }
+
+    return file;
+  }
+
 }
 

@@ -8,5 +8,5 @@ public enum UserState {
   PAYMENT,
   SUCCESS_PAYMENT,
   NEED_PAYMENT,
-  REQUEST
+  MANUAL_PAYMENT, REQUEST
 }

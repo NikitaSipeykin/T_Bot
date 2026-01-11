@@ -37,6 +37,8 @@ public class TextMarker {
   public static final String PAYMENT = "PAYMENT";
   public static final String INFO_PROGRAM = "INFO_PROGRAM";
   public static final String NEED_PAYMENT = "NEED_PAYMENT";
+  public static final String MANUAL_PAYMENT = "MANUAL_PAYMENT";
+  public static final String SEND_PAYMENT_REQUEST = "SEND_PAYMENT_REQUEST";
 
   public static final String SCHEDULER_MESSAGE = "SCHEDULER_MESSAGE";
 
@@ -60,5 +62,8 @@ public class TextMarker {
   public static final String PROGRAM_SAHASRARA_END = "PROGRAM_SAHASRARA_END";
   public static final String END_PROGRAM = "END_PROGRAM";
   public static final String PROGRAM_THANKS = "PROGRAM_THANKS";
+  public static final String HISTORY = "HISTORY";
+
+
 }
 
